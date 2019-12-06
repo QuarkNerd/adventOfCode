@@ -99,12 +99,12 @@ const A = `110756
 66506
 127296`;
 
-const B = A.split("\n");
+const massList = A.split("\n");
 
 let totalMass = 0;
 
-for (let i = 0; i < B.length; i++) {
-  totalMass += getFuelMass(B[i]);
+for (const mass of massList) {
+  totalMass += getFuelMass(mass);
 }
 
 function getFuelMass(mass) {
@@ -112,7 +112,7 @@ function getFuelMass(mass) {
   if (fuelMass <= 0) {
     return 0;
   }
-  return fuelMass + getFuelMass(fuelMass); // recursive
+  return fuelMass + getFuelMass(fuelMass); // recursive for part 2
 }
 
-console.log(total);
+console.log(totalMass);
