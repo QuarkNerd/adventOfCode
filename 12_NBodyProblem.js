@@ -1,7 +1,7 @@
-const input = `<x=-1, y=0, z=2>
-<x=2, y=-10, z=-7>
-<x=4, y=-8, z=8>
-<x=3, y=5, z=-1>`;
+const input = `<x=7, y=10, z=17>
+<x=-2, y=7, z=0>
+<x=12, y=5, z=12>
+<x=5, y=-8, z=6>`;
 const state = input
   .replace(/ /g, "")
   .replace(/=/g, "")
@@ -30,13 +30,14 @@ const moonNumber = state.length;
 
 solvePartOne();
 function solvePartOne() {
-  for (let i = 0; i < 9; i++) {
-    console.log(state);
+  for (let i = 0; i < 1000; i++) {
     updateVelocity();
     updatePosition();
   }
   console.log(getTotalEnergy(state));
 }
+
+function solvePartTwo() {}
 
 function updatePosition() {
   state.forEach(moon => {
@@ -69,7 +70,7 @@ function updateVelocityOfPair(moon1, moon2) {
     if (moon1.pos[dim] < moon2.pos[dim]) {
       moon1.vel[dim] += 1;
       moon2.vel[dim] -= 1;
-    } else {
+    } else if (moon1.pos[dim] > moon2.pos[dim]) {
       moon2.vel[dim] += 1;
       moon1.vel[dim] -= 1;
     }
