@@ -28,10 +28,12 @@ solvePartTwo();
 function solvePartTwo() {
   let asteroidRelativeList = getAsteroidsSeen(26, 36);
   asteroidRelativeList.sort((a, b) => getAngle(a) - getAngle(b));
+  console.log(asteroidRelativeList[199]);
   console.log(
-    asteroidRelativeList[199][0] * 100 + asteroidRelativeList[199][1]
+    (asteroidRelativeList[199][0] + 26) * 100 +
+    asteroidRelativeList[199][1] +
+    36
   );
-  console.log(asteroidRelativeList);
 }
 
 function getAsteroidsSeen(x0, y0) {
@@ -45,8 +47,8 @@ function getAsteroidsSeen(x0, y0) {
         hashKey = reducedCoors.join(",");
         if (
           reducedCoorhash[hashKey] == undefined ||
-          Math.abs(x1) < Math.abs(reducedCoorhash[hashKey][0]) ||
-          Math.abs(y1) < Math.abs(reducedCoorhash[hashKey][1])
+          Math.abs(x1 - x0) < Math.abs(reducedCoorhash[hashKey][0]) ||
+          Math.abs(y1 - y0) < Math.abs(reducedCoorhash[hashKey][1])
         ) {
           reducedCoorhash[hashKey] = [x1 - x0, y1 - y0];
         }
@@ -72,10 +74,15 @@ function getReducedCoor(x, y) {
 
 //Returns angle that coordinates form with origin with a line going straight up from origin
 // coordinates are positive for right-down
+
 function getAngle([x, y]) {
+  if ((x = 0 && y < 0)) {
+    return 0;
+  }
+
   y = -y;
   const angleBase = Math.atan2(x, y);
-  if (y > 0) {
+  if (x > 0) {
     return angleBase;
   }
 
