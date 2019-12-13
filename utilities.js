@@ -161,6 +161,32 @@ class Robot {
   };
 }
 
+class Arcade {
+  constructor() {
+    this.gridHash = {};
+    this.currentInstruction = [];
+    this.tileCount = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+  }
+
+  setInstruction = input => {
+    if (this.currentInstruction.length < 2) {
+      this.currentInstruction.push(input);
+    } else {
+      this.drawTile(
+        this.currentInstruction[0],
+        this.currentInstruction[1],
+        input
+      );
+      this.currentInstruction = [];
+    }
+  };
+
+  drawTile = (x, y, tile) => {
+    this.gridHash[`${x},${y}`] = tile;
+    this.tileCount[tile] += 1;
+  };
+}
+
 function getValue(intcode, ID, parameterMode, relativeBase) {
   let value;
   if (parameterMode == 0) {
@@ -184,4 +210,4 @@ function setValue(intcode, value, ID, parameterMode, relativeBase) {
   }
 }
 
-module.exports = { computeIntcode, Robot };
+module.exports = { computeIntcode, Robot, Arcade };
