@@ -187,6 +187,8 @@ class Arcade {
   };
 }
 
+function drawFromHashGrid(HashGrid, limits, dictionary) {}
+
 function getValue(intcode, ID, parameterMode, relativeBase) {
   let value;
   if (parameterMode == 0) {

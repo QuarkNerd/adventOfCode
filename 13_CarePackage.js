@@ -11,3 +11,9 @@ function solvePartOne() {
   utilities.computeIntcode([...intcode], null, arcade.setInstruction);
   console.log(arcade.tileCount[2]);
 }
+
+function solvePartTwo() {
+  const arcade = new utilities.Arcade();
+  intcode[0] = 2;
+  utilities.compute(intcode, arcade.getInput, arcade.setInstruction);
+}
