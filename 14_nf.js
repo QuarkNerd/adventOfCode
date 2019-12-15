@@ -1,22 +1,19 @@
-const { Fraction } = require("./utilities");
 const input = getInput();
 const reactionList = input.split(",,");
 const ingredientsHash = {};
 reactionList.forEach(reaction => {
   const [ingredientList, aggregate] = reaction.split(" => ");
   const [aggregateQuantity, aggregateMaterial] = aggregate.split(" ");
-  ingredientsHash[aggregateMaterial] = ingredientList
-    .split(", ")
-    .map(ingredient => {
+  ingredientsHash[aggregateMaterial] = {
+    quantity: parseFloat(aggregateQuantity),
+    ingredients: ingredientList.split(", ").map(ingredient => {
       const [ingredientQuantity, ingredientMaterial] = ingredient.split(" ");
       return {
-        quantity: new Fraction(
-          parseFloat(ingredientQuantity),
-          parseFloat(aggregateQuantity)
-        ),
+        quantity: parseFloat(ingredientQuantity),
         ingredient: ingredientMaterial
       };
-    }, {});
+    }, {})
+  };
 });
 
 console.log(ingredientsHash);
@@ -28,15 +25,16 @@ function solvePartOne() {
 
 function getOreQuantity(aggregate) {
   if (aggregate === "ORE") {
-    return new Fraction(1, 1);
+    return 1;
   }
 
   return ingredientsHash[aggregate].reduce((totalQuantity, current) => {
-    totalQuantity = totalQuantity.add(
-      current.quantity.multiplyBy(getOreQuantity(current.ingredient))
+    totalQuantity += Math.ceil(
+      current.quantity * getOreQuantity(current.ingredient)
     );
+
     return totalQuantity;
-  }, new Fraction(0, 1));
+  }, 0);
 }
 
 function getInput() {
