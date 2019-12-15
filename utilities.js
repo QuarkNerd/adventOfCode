@@ -95,31 +95,6 @@ function computeIntcode(intcode, getInput, output) {
   return C;
 }
 
-class Fraction {
-  constructor(numerator, denenominator) {
-    this.numerator = numerator;
-    this.denenominator = denenominator;
-  }
-
-  add = frac => {
-    return new Fraction(
-      this.numerator * frac.denenominator + frac.numerator * this.denenominator,
-      this.denenominator * frac.denenominator
-    );
-  };
-
-  multiplyBy = frac => {
-    return new Fraction(
-      this.numerator * frac.numerator,
-      this.denenominator * frac.denenominator
-    );
-  };
-
-  divideBy = frac => {
-    return this.multiplyBy(new Fraction(frac.denenominator, frac.numerator));
-  };
-}
-
 // both classes can probably inherit grid functionality and drawing functionality
 class Robot {
   constructor(startValue) {
@@ -275,4 +250,4 @@ function setValue(intcode, value, ID, parameterMode, relativeBase) {
   }
 }
 
-module.exports = { computeIntcode, Robot, Arcade, Fraction };
+module.exports = { computeIntcode, Robot, Arcade };
