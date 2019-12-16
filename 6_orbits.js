@@ -1,5 +1,54 @@
 console.time();
-const input = `J1C)J1M
+const input = getInput();
+const orbitsList = input.split("\n");
+const orbitsNum = {};
+const reverseOrbitsHash = {};
+
+orbitsList.forEach(orbit => {
+  const [primary, moon] = orbit.split(")");
+  reverseOrbitsHash[moon] = primary;
+});
+
+let totalOrbits = 0;
+for (const moon in reverseOrbitsHash) {
+  totalOrbits += getOrbitNumbers(moon, reverseOrbitsHash);
+}
+console.log(totalOrbits);
+
+const comToYouOrbit = getPathToCOM(reverseOrbitsHash["YOU"]).reverse();
+const comToSanOrbit = getPathToCOM(reverseOrbitsHash["SAN"]).reverse();
+
+for (let i = 0; i < comToYouOrbit.length; i++) {
+  if (comToYouOrbit[i] !== comToSanOrbit[i]) {
+    console.log(comToYouOrbit.length + comToSanOrbit.length - 2 * i);
+    break;
+  }
+}
+// returns the total number of object that moon orbits
+function getOrbitNumbers(moon, reverseOrbitsHash) {
+  if (moon in orbitsNum) {
+    return orbitsNum[moon];
+  }
+  if (moon == "COM") {
+    return 0;
+  }
+  const orbitNumber =
+    1 + getOrbitNumbers(reverseOrbitsHash[moon], reverseOrbitsHash);
+  orbitsNum[moon] = orbitNumber;
+  return orbitNumber;
+}
+
+function getPathToCOM(moon) {
+  if (moon === "COM") {
+    return [moon];
+  } else {
+    return [moon, ...getPathToCOM(reverseOrbitsHash[moon])];
+  }
+}
+console.timeEnd();
+
+function getInput() {
+  return `J1C)J1M
 N2W)2DM
 DST)VZL
 555)45Q
@@ -1001,52 +1050,7 @@ G4Z)GKJ
 6R1)34Z
 DVN)6KR
 VMM)687`;
-const orbitsList = input.split("\n");
-const orbitsNum = {};
-const reverseOrbitsHash = {};
-
-orbitsList.forEach(orbit => {
-  const [primary, moon] = orbit.split(")");
-  reverseOrbitsHash[moon] = primary;
-});
-
-let totalOrbits = 0;
-for (const moon in reverseOrbitsHash) {
-  totalOrbits += getOrbitNumbers(moon, reverseOrbitsHash);
 }
-console.log(totalOrbits);
-
-const comToYouOrbit = getPathToCOM(reverseOrbitsHash["YOU"]).reverse();
-const comToSanOrbit = getPathToCOM(reverseOrbitsHash["SAN"]).reverse();
-
-for (let i = 0; i < comToYouOrbit.length; i++) {
-  if (comToYouOrbit[i] !== comToSanOrbit[i]) {
-    console.log(comToYouOrbit.length + comToSanOrbit.length - 2 * i);
-    break;
-  }
-}
-// returns the total number of object that moon orbits
-function getOrbitNumbers(moon, reverseOrbitsHash) {
-  if (moon in orbitsNum) {
-    return orbitsNum[moon];
-  }
-  if (moon == "COM") {
-    return 0;
-  }
-  const orbitNumber =
-    1 + getOrbitNumbers(reverseOrbitsHash[moon], reverseOrbitsHash);
-  orbitsNum[moon] = orbitNumber;
-  return orbitNumber;
-}
-
-function getPathToCOM(moon) {
-  if (moon === "COM") {
-    return [moon];
-  } else {
-    return [moon, ...getPathToCOM(reverseOrbitsHash[moon])];
-  }
-}
-console.timeEnd();
 /////////////////////////old solution for part 1, changed do I only made one hash
 // orbitsList.forEach(orbit => {
 //   const [primary, moon] = orbit.split(")");
