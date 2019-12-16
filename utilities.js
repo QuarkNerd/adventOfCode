@@ -96,7 +96,7 @@ function computeIntcode(intcode, getInput, output) {
   return C;
 }
 
-// both classes can probably inherit grid functionality and drawing functionality
+// these 3 classes can probably inherit some grid functionality and drawing functionality
 class Robot {
   constructor(startValue) {
     this.colourHash = {};
@@ -217,6 +217,8 @@ class Arcade {
     );
   };
 }
+
+class RepairDroid {}
 
 function getImagefromGridHash(
   gridHash,
