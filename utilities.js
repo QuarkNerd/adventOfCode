@@ -1,3 +1,4 @@
+const readline = require("readline");
 function computeIntcode(intcode, getInput, output) {
   let C = intcode;
   let relativeBase = 0;
@@ -173,29 +174,46 @@ class Arcade {
     this.gridHash = {};
     this.currentInstruction = [];
     this.tileCount = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+    this.limits = { x: { max: 0, min: 0 }, y: { max: 0, min: 0 } };
   }
 
   setInstruction = input => {
     if (this.currentInstruction.length < 2) {
       this.currentInstruction.push(input);
     } else {
-      this.drawTile(
-        this.currentInstruction[0],
-        this.currentInstruction[1],
+      this.setTile(
+        { x: this.currentInstruction[0], y: this.currentInstruction[1] },
         input
       );
       this.currentInstruction = [];
     }
   };
 
-  drawTile = (x, y, tile) => {
-    this.gridHash[`${x},${y}`] = tile;
+  setTile = (coor, tile) => {
+    this.gridHash[`${coor.x},${coor.y}`] = tile;
     this.tileCount[tile] += 1;
+    ["x", "y"].forEach(dim => {
+      this.limits[dim] = {
+        min: Math.min(this.limits[dim].min, coor[dim]),
+        max: Math.max(this.limits[dim].max, coor[dim])
+      };
+    });
+  };
+
+  getInput = () => {
+    this.draw();
+    return 1;
   };
 
   draw = () => {
     console.log(
-      getImagefromGridHash(this.gridHash, this.limits, 0, [["0", " "]])
+      getImagefromGridHash(this.gridHash, this.limits, 0, [
+        ["0", " "],
+        ["1", "#"],
+        ["2", "O"],
+        ["3", "|"],
+        ["4", "+"]
+      ])
     );
   };
 }
