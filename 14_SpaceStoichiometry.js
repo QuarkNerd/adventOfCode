@@ -23,25 +23,25 @@ function solvePartOne() {
 
 solvePartTwo();
 function solvePartTwo() {
-  const totalOre = Math.pow(10, 12);
-  const spareQuantity = {};
-  const oreForOneFuel = getOreQuantityRequired("FUEL", 1, spareQuantity);
-  let fuelMade = Math.floor(totalOre / oreForOneFuel);
-  let oreLeft = totalOre - fuelMade * oreForOneFuel;
-  // There has to be a nicer way to do this?
-  const totalSpareQuantity = {};
-  Object.keys(spareQuantity).forEach(ingredient => {
-    totalSpareQuantity[ingredient] = spareQuantity[ingredient] * fuelMade;
-  });
-  let oreNeeded = 0;
-  while (true) {
-    oreNeeded = getOreQuantityRequired("FUEL", 1, totalSpareQuantity);
-    if (oreLeft >= oreNeeded) {
-      oreLeft -= oreNeeded;
-      fuelMade++;
-    } else break;
+  let resultFound = false;
+  const TOTALORE = Math.pow(10, 12);
+  const fuelMadeinefficiently = parseInt(
+    TOTALORE / getOreQuantityRequired("FUEL")
+  );
+  const fuelRange = [fuelMadeinefficiently, 2 * fuelMadeinefficiently];
+  let testFuelAmount;
+  while (!resultFound) {
+    if (fuelRange[1] - fuelRange[0] < 2) {
+      resultFound = true;
+    }
+    testFuelAmount = parseInt((fuelRange[0] + fuelRange[1]) / 2);
+    if (getOreQuantityRequired("FUEL", testFuelAmount) < TOTALORE) {
+      fuelRange[0] = testFuelAmount;
+    } else {
+      fuelRange[1] = testFuelAmount;
+    }
   }
-  console.log(fuelMade);
+  console.log(fuelRange[0]);
 }
 
 function getOreQuantityRequired(
@@ -140,3 +140,26 @@ function getInput() {
 1 GCFP, 5 BPLFB => 1 NSXFK
 3 KJVZ, 1 QXQZ, 6 DKDST, 1 FCMVJ, 2 CZCJ, 1 QNRH, 7 WLKC => 4 FBTW`;
 }
+
+// Broken, not sure why
+// function solvePartTwo() {
+//   const totalOre = Math.pow(10, 12);
+//   const spareQuantity = {};
+//   const oreForOneFuel = getOreQuantityRequired("FUEL", 1, spareQuantity);
+//   let fuelMade = Math.floor(totalOre / oreForOneFuel);
+//   let oreLeft = totalOre - fuelMade * oreForOneFuel;
+//   // There has to be a nicer way to do this?
+//   const totalSpareQuantity = {};
+//   Object.keys(spareQuantity).forEach(ingredient => {
+//     totalSpareQuantity[ingredient] = spareQuantity[ingredient] * fuelMade;
+//   });
+//   let oreNeeded = 0;
+//   while (true) {
+//     oreNeeded = getOreQuantityRequired("FUEL", 1, totalSpareQuantity);
+//     if (oreLeft >= oreNeeded) {
+//       oreLeft -= oreNeeded;
+//       fuelMade++;
+//     } else break;
+//   }
+//   console.log(fuelMade);
+// }
