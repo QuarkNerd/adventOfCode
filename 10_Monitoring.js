@@ -20,19 +20,23 @@ function solvePartOne() {
       }
     }
   }
-  console.log("Answer", currentHighest, bestCoor);
+  console.log("Answer", currentHighest, "Best coordinates", bestCoor);
 }
 
 solvePartTwo();
 
 function solvePartTwo() {
-  let asteroidRelativeList = getAsteroidsSeen(26, 36);
-  asteroidRelativeList.sort((a, b) => getAngle(a) - getAngle(b));
-  console.log(asteroidRelativeList[199]);
+  const bestX = 26;
+  const bestY = 36;
+  let asteroidRelativeList = getAsteroidsSeen(bestX, bestY);
+  asteroidRelativeList.sort((a, b) => {
+    return getAngle(a) - getAngle(b);
+  });
+
   console.log(
-    (asteroidRelativeList[199][0] + 26) * 100 +
-    asteroidRelativeList[199][1] +
-    36
+    (asteroidRelativeList[199][0] + bestX) * 100 +
+      asteroidRelativeList[199][1] +
+      bestY
   );
 }
 
@@ -73,11 +77,15 @@ function getReducedCoor(x, y) {
 }
 
 //Returns angle that coordinates form with origin with a line going straight up from origin
-// coordinates are positive for right-down
+// coordinates are positive for right-down by deafult
 
 function getAngle([x, y]) {
-  if ((x = 0 && y < 0)) {
+  if (x == 0 && y < 0) {
     return 0;
+  }
+
+  if (x == 0 && y > 0) {
+    return Math.PI;
   }
 
   y = -y;
