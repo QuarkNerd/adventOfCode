@@ -1,0 +1,6 @@
+C:\Dev\adventOfCode\16_FFT\obj\Debug\16_FFT.csprojAssemblyReference.cache
+C:\Dev\adventOfCode\16_FFT\bin\Debug\16_FFT.exe.config
+C:\Dev\adventOfCode\16_FFT\bin\Debug\16_FFT.exe
+C:\Dev\adventOfCode\16_FFT\bin\Debug\16_FFT.pdb
+C:\Dev\adventOfCode\16_FFT\obj\Debug\16_FFT.exe
+C:\Dev\adventOfCode\16_FFT\obj\Debug\16_FFT.pdb
