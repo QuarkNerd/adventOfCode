@@ -83,7 +83,7 @@ function computeIntcode(intcode, getInput, output) {
         i += 2;
         break;
       case 99:
-        console.log("halt");
+        // console.log("halt");
         leave = true;
         break;
       default:
@@ -218,6 +218,57 @@ class Arcade {
   };
 }
 
+class VacumnBot {
+  constructor() {
+    this.currentLine = [];
+    this.grid = [this.currentLine];
+  }
+
+  setGridTile = input => {
+    switch (input) {
+      case 35:
+        this.currentLine.push("#");
+        break;
+      case 46:
+        this.currentLine.push(".");
+        break;
+      case 10:
+        this.currentLine = [];
+        this.grid.push(this.currentLine);
+    }
+  };
+
+  getSumAllignParam = () => {
+    const height = this.grid.length;
+    const width = this.grid[0].length;
+
+    let sum = 0;
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        if (this.isIntersection(x, y)) sum += x * y;
+      }
+    }
+    return sum;
+  };
+
+  isIntersection = (x, y) => {
+    return this.areScaffolds([
+      { x, y },
+      { x, y: y - 1 },
+      { x, y: y + 1 },
+      { x: x + 1, y },
+      { x: x - 1, y }
+    ]);
+  };
+
+  areScaffolds = coors => {
+    const grid = this.grid;
+    return coors.every(function({ x, y }) {
+      return x >= 0 && y >= 0 && grid[y][x] === "#";
+    });
+  };
+}
+
 class RepairDroid {}
 
 function getImagefromGridHash(
@@ -270,4 +321,4 @@ function setValue(intcode, value, ID, parameterMode, relativeBase) {
   }
 }
 
-module.exports = { computeIntcode, Robot, Arcade };
+module.exports = { computeIntcode, Robot, Arcade, VacumnBot };
