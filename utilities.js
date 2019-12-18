@@ -1,3 +1,4 @@
+const readline = require("readline");
 function computeIntcode(intcode, getInput, output) {
   let C = intcode;
   let relativeBase = 0;
@@ -82,7 +83,7 @@ function computeIntcode(intcode, getInput, output) {
         i += 2;
         break;
       case 99:
-        console.log("halt");
+        // console.log("halt");
         leave = true;
         break;
       default:
@@ -95,32 +96,7 @@ function computeIntcode(intcode, getInput, output) {
   return C;
 }
 
-class Fraction {
-  constructor(numerator, denenominator) {
-    this.numerator = numerator;
-    this.denenominator = denenominator;
-  }
-
-  add = frac => {
-    return new Fraction(
-      this.numerator * frac.denenominator + frac.numerator * this.denenominator,
-      this.denenominator * frac.denenominator
-    );
-  };
-
-  multiplyBy = frac => {
-    return new Fraction(
-      this.numerator * frac.numerator,
-      this.denenominator * frac.denenominator
-    );
-  };
-
-  divideBy = frac => {
-    return this.multiplyBy(new Fraction(frac.denenominator, frac.numerator));
-  };
-}
-
-// both classes can probably inherit grid functionality and drawing functionality
+// these 3 classes can probably inherit some grid functionality and drawing functionality
 class Robot {
   constructor(startValue) {
     this.colourHash = {};
@@ -198,32 +174,102 @@ class Arcade {
     this.gridHash = {};
     this.currentInstruction = [];
     this.tileCount = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+    this.limits = { x: { max: 0, min: 0 }, y: { max: 0, min: 0 } };
   }
 
   setInstruction = input => {
     if (this.currentInstruction.length < 2) {
       this.currentInstruction.push(input);
     } else {
-      this.drawTile(
-        this.currentInstruction[0],
-        this.currentInstruction[1],
+      this.setTile(
+        { x: this.currentInstruction[0], y: this.currentInstruction[1] },
         input
       );
       this.currentInstruction = [];
     }
   };
 
-  drawTile = (x, y, tile) => {
-    this.gridHash[`${x},${y}`] = tile;
+  setTile = (coor, tile) => {
+    this.gridHash[`${coor.x},${coor.y}`] = tile;
     this.tileCount[tile] += 1;
+    ["x", "y"].forEach(dim => {
+      this.limits[dim] = {
+        min: Math.min(this.limits[dim].min, coor[dim]),
+        max: Math.max(this.limits[dim].max, coor[dim])
+      };
+    });
+  };
+
+  getInput = () => {
+    this.draw();
+    return 1;
   };
 
   draw = () => {
     console.log(
-      getImagefromGridHash(this.gridHash, this.limits, 0, [["0", " "]])
+      getImagefromGridHash(this.gridHash, this.limits, 0, [
+        ["0", " "],
+        ["1", "#"],
+        ["2", "O"],
+        ["3", "|"],
+        ["4", "+"]
+      ])
     );
   };
 }
+
+class VacumnBot {
+  constructor() {
+    this.currentLine = [];
+    this.grid = [this.currentLine];
+  }
+
+  setGridTile = input => {
+    switch (input) {
+      case 35:
+        this.currentLine.push("#");
+        break;
+      case 46:
+        this.currentLine.push(".");
+        break;
+      case 10:
+        this.currentLine = [];
+        this.grid.push(this.currentLine);
+    }
+  };
+
+  getSumAllignParam = () => {
+    const height = this.grid.length;
+    const width = this.grid[0].length;
+
+    let sum = 0;
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        if (this.isIntersection(x, y)) sum += x * y;
+      }
+    }
+    return sum;
+  };
+
+  isIntersection = (x, y) => {
+    return this.areScaffolds([
+      { x, y },
+      { x, y: y - 1 },
+      { x, y: y + 1 },
+      { x: x + 1, y },
+      { x: x - 1, y }
+    ]);
+  };
+
+  areScaffolds = coors => {
+    const grid = this.grid;
+    return coors.every(function({ x, y }) {
+      return x >= 0 && y >= 0 && grid[y][x] === "#";
+    });
+  };
+}
+
+class RepairDroid {}
 
 function getImagefromGridHash(
   gridHash,
@@ -275,4 +321,4 @@ function setValue(intcode, value, ID, parameterMode, relativeBase) {
   }
 }
 
-module.exports = { computeIntcode, Robot, Arcade, Fraction };
+module.exports = { computeIntcode, Robot, Arcade, VacumnBot };

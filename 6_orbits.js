@@ -1,4 +1,3 @@
-console.time();
 const input = getInput();
 const orbitsList = input.split("\n");
 const orbitsNum = {};
@@ -45,7 +44,6 @@ function getPathToCOM(moon) {
     return [moon, ...getPathToCOM(reverseOrbitsHash[moon])];
   }
 }
-console.timeEnd();
 
 function getInput() {
   return `J1C)J1M

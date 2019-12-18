@@ -4,8 +4,8 @@ const input =
 const B = input.split(",");
 const intcode = B.map(entry => parseInt(entry));
 
-solvePartOne();
-
+//solvePartOne();
+solvePartTwo();
 function solvePartOne() {
   const arcade = new utilities.Arcade();
   utilities.computeIntcode([...intcode], null, arcade.setInstruction);
@@ -15,5 +15,9 @@ function solvePartOne() {
 function solvePartTwo() {
   const arcade = new utilities.Arcade();
   intcode[0] = 2;
-  utilities.compute(intcode, arcade.getInput, arcade.setInstruction);
+  utilities.computeIntcode(
+    [...intcode],
+    arcade.getInput,
+    arcade.setInstruction
+  );
 }
