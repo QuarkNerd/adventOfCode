@@ -175,17 +175,27 @@ class Arcade {
     this.currentInstruction = [];
     this.tileCount = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
     this.limits = { x: { max: 0, min: 0 }, y: { max: 0, min: 0 } };
+    this.paddle = { x: undefined, y: undefined };
+    this.ball = { x: undefined, y: undefined };
   }
 
   setInstruction = input => {
     if (this.currentInstruction.length < 2) {
       this.currentInstruction.push(input);
     } else {
-      this.setTile(
-        { x: this.currentInstruction[0], y: this.currentInstruction[1] },
-        input
-      );
+      const coor = {
+        x: this.currentInstruction[0],
+        y: this.currentInstruction[1]
+      };
       this.currentInstruction = [];
+      if (coor.x == -1 && coor.y == 0) {
+        this.score = input;
+        return;
+      }
+
+      this.setTile(coor, input);
+      if (input == 3) this.paddle = coor;
+      else if (input == 4) this.ball = coor;
     }
   };
 
@@ -201,8 +211,7 @@ class Arcade {
   };
 
   getInput = () => {
-    this.draw();
-    return 1;
+    return Math.sign(this.ball.x - this.paddle.x);
   };
 
   draw = () => {
@@ -211,7 +220,7 @@ class Arcade {
         ["0", " "],
         ["1", "#"],
         ["2", "O"],
-        ["3", "|"],
+        ["3", "_"],
         ["4", "+"]
       ])
     );
