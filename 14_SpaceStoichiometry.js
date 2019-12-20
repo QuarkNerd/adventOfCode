@@ -23,17 +23,13 @@ function solvePartOne() {
 
 solvePartTwo();
 function solvePartTwo() {
-  let resultFound = false;
   const TOTALORE = Math.pow(10, 12);
   const fuelMadeinefficiently = parseInt(
     TOTALORE / getOreQuantityRequired("FUEL")
   );
   const fuelRange = [fuelMadeinefficiently, 2 * fuelMadeinefficiently];
   let testFuelAmount;
-  while (!resultFound) {
-    if (fuelRange[1] - fuelRange[0] < 2) {
-      resultFound = true;
-    }
+  while (fuelRange[1] - fuelRange[0] > 1) {
     testFuelAmount = parseInt((fuelRange[0] + fuelRange[1]) / 2);
     if (getOreQuantityRequired("FUEL", testFuelAmount) < TOTALORE) {
       fuelRange[0] = testFuelAmount;

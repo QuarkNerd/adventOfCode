@@ -5,7 +5,7 @@ const B = input.split(",");
 const intcode = B.map(entry => parseInt(entry));
 
 solvePartOne();
-// solvePartTwo();
+
 function solvePartOne() {
   const vacumnBot = new utilities.VacumnBot();
   utilities.computeIntcode([...intcode], null, vacumnBot.setGridTile);

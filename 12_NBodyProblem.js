@@ -1,44 +1,49 @@
-const state = getStartingState();
-const moonNumber = state.length;
+solvePartOne();
+solvePartTwo();
 
-// solvePartOne(); // cant solve both together currently
 function solvePartOne() {
+  const state = getStartingState();
   for (let i = 0; i < 1000; i++) {
-    ["x", "y", "z"].forEach(dim => updateVelocity(dim));
-    ["x", "y", "z"].forEach(dim => updatePosition(dim));
+    ["x", "y", "z"].forEach(dim => {
+      updateVelocity(state, dim);
+    });
+    ["x", "y", "z"].forEach(dim => {
+      updatePosition(state, dim);
+    });
   }
   console.log(getTotalEnergy(state));
 }
 
-console.log(convertStateToHash(state));
-solvePartTwo();
 function solvePartTwo() {
-  let repetitionOccurred = false;
-  let step = 0;
-  const oldStatesHash = {};
-  while (!repetitionOccurred) {
-    if (oldStatesHash[convertStateToHash(state)] == undefined) {
-      oldStatesHash[convertStateToHash(state)] = step;
-    } else {
-      console.log(step, oldStatesHash[convertStateToHash(state)]);
-      repetitionOccurred = true;
-    }
-    updatePosition("z");
-    updateVelocity("z");
-    step++;
-  }
+  const repPeriods = ["x", "y", "z"].map(dim =>
+    getRepetitionPeriod(getStartingState(), dim)
+  );
+  console.log(getLCM(repPeriods));
 }
 
-function updatePosition(dim) {
+function getRepetitionPeriod(state, dimension) {
+  let step = 0;
+  const oldState = convertStateToString(state);
+  do {
+    updatePosition(state, dimension);
+    updateVelocity(state, dimension);
+    step++;
+  } while (convertStateToString(state) !== oldState);
+
+  return step;
+}
+
+function updatePosition(state, dimension) {
   state.forEach(moon => {
-    moon.pos[dim] += moon.vel[dim];
+    moon.pos[dimension] += moon.vel[dimension];
   });
 }
 
-function updateVelocity(dim) {
+function updateVelocity(state, dimension) {
+  const moonNumber = state.length;
   for (let i = 0; i < moonNumber; i++) {
     for (let j = i + 1; j < moonNumber; j++) {
-      updateVelocityOfPair(state[i], state[j], dim);
+      updateVelocityOfPair(state[i], state[j], dimension);
     }
   }
 }
@@ -63,7 +68,14 @@ function updateVelocityOfPair(moon1, moon2, dim) {
   }
 }
 
-function convertStateToHash(state) {
+function getLCM(numbers) {
+  let base = Math.max(...numbers);
+  let i = 1;
+  while (!numbers.every(number => (base * i) % number === 0)) i++;
+  return base * i;
+}
+
+function convertStateToString(state) {
   return JSON.stringify(state).replace(/[\[\]\{\}osel":,]/g, "");
 }
 

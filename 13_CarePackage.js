@@ -6,6 +6,7 @@ const intcode = B.map(entry => parseInt(entry));
 
 solvePartOne();
 solvePartTwo();
+
 function solvePartOne() {
   const arcade = new utilities.Arcade();
   utilities.computeIntcode([...intcode], null, arcade.setInstruction);
