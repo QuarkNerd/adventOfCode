@@ -1,4 +1,3 @@
-const readline = require("readline");
 function computeIntcode(intcode, getInput, output) {
   let C = intcode;
   let relativeBase = 0;
@@ -278,7 +277,13 @@ class VacumnBot {
   };
 }
 
-class RepairDroid {}
+function* arrayGenerator(array) {
+  var index = 0;
+  while (true) {
+    yield array[index];
+    index++;
+  }
+}
 
 function getImagefromGridHash(
   gridHash,
@@ -330,4 +335,4 @@ function setValue(intcode, value, ID, parameterMode, relativeBase) {
   }
 }
 
-module.exports = { computeIntcode, Robot, Arcade, VacumnBot };
+module.exports = { computeIntcode, Robot, Arcade, VacumnBot, arrayGenerator };

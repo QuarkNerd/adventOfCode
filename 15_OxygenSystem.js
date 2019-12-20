@@ -4,6 +4,7 @@ const B = input.split(",");
 const intcode = B.map(entry => parseInt(entry));
 
 // not an efficent solution
+solvePartOne();
 function solvePartOne() {
   let oxygenFound = false;
   let distanceToMove = 1;
@@ -23,7 +24,7 @@ function solvePartOne() {
   console.log(distanceToMove);
 }
 
-function* pathGenerator(path) {
+function* arrayGenerator(path) {
   var index = 0;
   while (true) {
     yield path[index];

@@ -4,6 +4,8 @@ const B = input.split(",");
 const intcode = B.map(entry => parseInt(entry));
 solvePartOne();
 solvePartTwo();
+
+// can be abstracted into more functions, but it took too long to solve this
 function solvePartOne() {
   const allThrusterPhases = getAllPermutations([0, 1, 2, 3, 4]);
   let highestThrusterOutput = 0;
