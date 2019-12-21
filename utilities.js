@@ -277,12 +277,40 @@ class VacumnBot {
   };
 }
 
-function* arrayGenerator(array) {
+class SpringDroid {
+  constructor(instructions) {
+    this.currentMessage = "";
+    this.instructionGenerator = generateFromArray(
+      instructions
+        .join("\n")
+        .split("")
+        .map(a => a.charCodeAt(0))
+    );
+  }
+
+  provideIntcodeInput = () => {
+    return this.instructionGenerator.next().value;
+  };
+
+  onIntcodeOutput = code => {
+    if (code > 127) console.log(code);
+    const char = String.fromCharCode(code);
+    if (char === "\n") {
+      console.log(this.currentMessage);
+      this.currentMessage = "";
+    } else {
+      this.currentMessage = this.currentMessage + char;
+    }
+  };
+}
+
+function* generateFromArray(array) {
   var index = 0;
-  while (true) {
+  while (index < array.length) {
     yield array[index];
     index++;
   }
+  throw "This generator has been called too many times, use longer array";
 }
 
 function getImagefromGridHash(
@@ -335,4 +363,11 @@ function setValue(intcode, value, ID, parameterMode, relativeBase) {
   }
 }
 
-module.exports = { computeIntcode, Robot, Arcade, VacumnBot, arrayGenerator };
+module.exports = {
+  computeIntcode,
+  Robot,
+  Arcade,
+  VacumnBot,
+  SpringDroid,
+  generateFromArray
+};

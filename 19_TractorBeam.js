@@ -51,7 +51,7 @@ function getMaxWidthAt(x, y) {
 
 function isInBeam(x, y) {
   let inBeam;
-  let generator = utilities.arrayGenerator([x, y]);
+  let generator = utilities.generateFromArray([x, y]);
   utilities.computeIntcode(
     [...intcode],
     () => generator.next().value,
