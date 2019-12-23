@@ -92,6 +92,7 @@ function computeIntcode(intcode, getInput, output) {
       break;
     }
   }
+  console.log("HALT");
   return C;
 }
 
@@ -313,6 +314,100 @@ function* generateFromArray(array) {
   throw "This generator has been called too many times, use longer array";
 }
 
+class RepairDroid {
+  constructor() {
+    this.graph = {
+      "0,0": {
+        connectedNodes: [],
+        directionToThis: null,
+        directionsLeftToVisit: [1, 2, 3, 4]
+      }
+    };
+    this.currentPos = { x: 0, y: 0 };
+    this.lastDirection = null;
+    this.wasLastMovementReversal = false;
+    this.oxygenCoorHash = null;
+  }
+
+  onIntcodeInputRequest = () => {
+    const posDetails = this.graph[this.getCurrentPosHashKey()];
+    const directionsLeft = posDetails.directionsLeftToVisit;
+    let newPos;
+    let direction;
+    while (directionsLeft.length !== 0) {
+      direction = directionsLeft.pop();
+      newPos = this.getNewPos(direction);
+      if (this.graph[this.getPosHashKey(newPos)] === undefined) {
+        this.lastDirection = direction;
+        this.wasLastMovementReversal = false;
+        return direction;
+      } else {
+        posDetails.connectedNodes.push(getPosHashKey(newPos));
+      }
+    }
+    if (this.currentPos.x !== 0 || this.currentPos.y !== 0) {
+      this.lastDirection = this.getOppositeDirection(
+        posDetails.directionToThis
+      );
+      this.wasLastMovementReversal = true;
+      return this.lastDirection;
+    }
+  };
+
+  onIntcodeOutput = output => {
+    if (output === 1 || output === 2) {
+      this.move(this.lastDirection);
+    }
+    if (output === 2) this.oxygenCoorHash = this.getCurrentPosHashKey();
+  };
+
+  move = direction => {
+    const newPos = this.getNewPos(direction);
+    const newPosHash = this.getPosHashKey(newPos);
+    if (!this.wasLastMovementReversal) {
+      this.graph[newPosHash] = this.createNewNodeInfo(direction);
+      this.graph[this.getCurrentPosHashKey()].connectedNodes.push(newPosHash);
+    }
+    this.currentPos = newPos;
+  };
+
+  getCurrentPosHashKey = () => {
+    return this.getPosHashKey({ x: this.currentPos.x, y: this.currentPos.y });
+  };
+
+  createNewNodeInfo = direction => {
+    const reverseDirection = this.getOppositeDirection(direction);
+    const directionsToTry = [1, 2, 3, 4];
+    directionsToTry.splice(directionsToTry.indexOf(reverseDirection), 1);
+    return {
+      connectedNodes: [this.getCurrentPosHashKey()],
+      directionToThis: direction,
+      directionsLeftToVisit: directionsToTry
+    };
+  };
+
+  getNewPos = direction => {
+    switch (direction) {
+      case 1:
+        return { x: this.currentPos.x, y: this.currentPos.y - 1 };
+      case 2:
+        return { x: this.currentPos.x, y: this.currentPos.y + 1 };
+      case 3:
+        return { x: this.currentPos.x - 1, y: this.currentPos.y };
+      case 4:
+        return { x: this.currentPos.x + 1, y: this.currentPos.y };
+    }
+  };
+
+  getPosHashKey = ({ x, y }) => {
+    return `${x},${y}`;
+  };
+
+  getOppositeDirection(dir) {
+    return { 1: 2, 2: 1, 3: 4, 4: 3 }[dir];
+  }
+}
+
 function getImagefromGridHash(
   gridHash,
   limits,
@@ -369,5 +464,6 @@ module.exports = {
   Arcade,
   VacumnBot,
   SpringDroid,
+  RepairDroid,
   generateFromArray
 };

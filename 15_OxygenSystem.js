@@ -4,46 +4,54 @@ const input = `3,1033,1008,1033,1,1032,1005,1032,31,1008,1033,2,1032,1005,1032,5
 const B = input.split(",");
 const intcode = B.map(entry => parseInt(entry));
 
-// not an efficent solution
+const repairDroid = new utilities.RepairDroid();
+utilities.computeIntcode(
+  intcode,
+  repairDroid.onIntcodeInputRequest,
+  repairDroid.onIntcodeOutput
+);
+const GRAPH = repairDroid.graph;
+
 solvePartOne();
 function solvePartOne() {
-  let oxygenFound = false;
-  let distanceToMove = 1;
-  let possiblePaths;
-  while (!oxygenFound) {
-    possiblePaths = getAllPathsOfLength(distanceToMove);
-    possiblePaths.forEach(path => {
-      const gen = pathGenerator(path);
-      utilities.computeIntcode(
-        [...intcode],
-        () => gen.next().value,
-        remoteFeedback
-      );
+  let searching = true;
+  let steps = 0;
+  let positionsToSearch = ["0,0"];
+  const positionsSearched = {};
+  while (searching) {
+    positionsToSearch.forEach(pos => {
+      positionsSearched[pos] = true;
+      if (pos === repairDroid.oxygenCoorHash) {
+        searching = false;
+        console.log(steps);
+      }
     });
-    distanceToMove++;
-  }
-  console.log(distanceToMove);
-}
-
-function* arrayGenerator(path) {
-  var index = 0;
-  while (true) {
-    yield path[index];
-    index++;
+    positionsToSearch = positionsToSearch
+      .map(pos => GRAPH[pos].connectedNodes)
+      .flat()
+      .filter(pos => positionsSearched[pos] === undefined);
+    steps++;
   }
 }
 
-function getAllPathsOfLength(length) {
-  const directionOptions = [1, 2, 3, 4];
-  if (length == 1) {
-    return directionOptions.map(direction => [direction]);
-  }
-  const paths = [];
-  getAllPathsOfLength(length - 1).forEach(shorterPath => {
-    directionOptions.forEach(direction => {
-      paths.push([direction, ...shorterPath]);
+solvePartTwo();
+function solvePartTwo() {
+  let spreading = true;
+  let mins = 0;
+  let nextPosToFill = [repairDroid.oxygenCoorHash];
+  const positionsFilled = {};
+  while (spreading) {
+    nextPosToFill.forEach(pos => {
+      positionsFilled[pos] = true;
     });
-  });
-
-  return paths;
+    nextPosToFill = nextPosToFill
+      .map(pos => GRAPH[pos].connectedNodes)
+      .flat()
+      .filter(pos => positionsFilled[pos] === undefined);
+    if (nextPosToFill.length === 0) {
+      console.log(mins);
+      spreading = false;
+    }
+    mins++;
+  }
 }
