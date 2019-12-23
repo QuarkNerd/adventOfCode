@@ -16,10 +16,10 @@ namespace _16_FFT
             for (int i = 0; i < 100; i++ )
             {
                 input = calculateFFT(input);
+           Console.WriteLine(input.Substring(0,50));
             }
-            Console.WriteLine(input);
+            Console.WriteLine(input.Substring(0, 50));
         }
-
         private static string calculateFFT(string input)
         {
             var basePhase = new List<int> { 0, 1, 0, -1 };
