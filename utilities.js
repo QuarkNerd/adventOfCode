@@ -305,15 +305,6 @@ class SpringDroid {
   };
 }
 
-function* generateFromArray(array) {
-  var index = 0;
-  while (index < array.length) {
-    yield array[index];
-    index++;
-  }
-  throw "This generator has been called too many times, use longer array";
-}
-
 class RepairDroid {
   constructor() {
     this.graph = {
@@ -406,6 +397,15 @@ class RepairDroid {
   getOppositeDirection(dir) {
     return { 1: 2, 2: 1, 3: 4, 4: 3 }[dir];
   }
+}
+
+function* generateFromArray(array) {
+  var index = 0;
+  while (index < array.length) {
+    yield array[index];
+    index++;
+  }
+  throw "This generator has been called too many times, use longer array";
 }
 
 function getImagefromGridHash(
