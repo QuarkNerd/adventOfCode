@@ -92,7 +92,6 @@ function computeIntcode(intcode, getInput, output) {
       break;
     }
   }
-  console.log("HALT");
   return C;
 }
 
@@ -234,47 +233,69 @@ class VacumnBot {
   }
 
   setGridTile = input => {
-    switch (input) {
-      case 35:
-        this.currentLine.push("#");
-        break;
-      case 46:
-        this.currentLine.push(".");
-        break;
-      case 10:
-        this.currentLine = [];
-        this.grid.push(this.currentLine);
+    const char = String.fromCharCode(input);
+    if (char === "\n") {
+      this.currentLine = [];
+      this.grid.push(this.currentLine);
+    } else {
+      this.currentLine.push(char);
     }
   };
 
-  getSumAllignParam = () => {
+  draw = () => {
+    console.log(this.grid.join("\n").replace(/,/g, ""));
+  };
+
+  getNodeConnections = () => {
     const height = this.grid.length;
     const width = this.grid[0].length;
 
-    let sum = 0;
+    let nodeConnections = {};
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
-        if (this.isIntersection(x, y)) sum += x * y;
+        if (this.isScaffold([{ x, y }])) {
+          const possibleConnections = [
+            { x: x + 1, y },
+            { x: x - 1, y },
+            { x, y: y - 1 },
+            { x, y: y + 1 }
+          ];
+          const actualConnections = possibleConnections.filter(coor =>
+            this.isScaffold([coor])
+          );
+          nodeConnections[`${x},${y}`] = actualConnections.map(
+            ({ x, y }) => `${x},${y}`
+          );
+
+          if (this.isBot(x, y)) this.robotStart = `${x},${y}`;
+        }
       }
     }
+    return nodeConnections;
+  };
+
+  getSumAllignParam = () => {
+    const nodeConnections = this.getNodeConnections();
+    let sum = 0;
+    Object.entries(nodeConnections).forEach(([coor, connections]) => {
+      if (connections.length === 4) {
+        const [x, y] = coor.split(",");
+        sum += x * y;
+      }
+    });
     return sum;
   };
 
-  isIntersection = (x, y) => {
-    return this.areScaffolds([
-      { x, y },
-      { x, y: y - 1 },
-      { x, y: y + 1 },
-      { x: x + 1, y },
-      { x: x - 1, y }
-    ]);
+  isScaffold = coors => {
+    const grid = this.grid;
+    const isBotFunc = this.isBot;
+    return coors.every(function({ x, y }) {
+      return x >= 0 && y >= 0 && (grid[y][x] === "#" || isBotFunc(x, y));
+    });
   };
 
-  areScaffolds = coors => {
-    const grid = this.grid;
-    return coors.every(function({ x, y }) {
-      return x >= 0 && y >= 0 && grid[y][x] === "#";
-    });
+  isBot = (x, y) => {
+    return ["<", ">", "v", "^"].indexOf(this.grid[y][x]) !== -1;
   };
 }
 

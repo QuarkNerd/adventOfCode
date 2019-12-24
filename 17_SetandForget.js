@@ -4,10 +4,37 @@ const input =
 const B = input.split(",");
 const intcode = B.map(entry => parseInt(entry));
 
-solvePartOne();
+const vacumnBot = new utilities.VacumnBot();
+utilities.computeIntcode([...intcode], null, vacumnBot.setGridTile);
 
+solvePartOne();
+solvePartTwo();
 function solvePartOne() {
-  const vacumnBot = new utilities.VacumnBot();
-  utilities.computeIntcode([...intcode], null, vacumnBot.setGridTile);
   console.log(vacumnBot.getSumAllignParam());
+}
+function solvePartTwo() {
+  const nodeConnections = vacumnBot.getNodeConnections();
+  intcode[0] = 2;
+  //   const a = utilities.generateFromArray(
+  //     ["A,B,C", "R,8", "R,3", "3", "y", ""]
+  //       .join("\n")
+  //       .split("")
+  //       .map(a => a.charCodeAt(0))
+  //   );
+  //   vacumnBot.draw();
+  //   vacumnBot.currentLine = [];
+  //   vacumnBot.grid = [vacumnBot.currentLine];
+  //   utilities.computeIntcode(
+  //     [...intcode],
+  //     () => inputAA(a),
+  //     vacumnBot.setGridTile
+  //   );
+  //   vacumnBot.draw();
+  // }
+
+  // function inputAA(a) {
+  //   vacumnBot.draw();
+  //   vacumnBot.currentLine = [];
+  //   vacumnBot.grid = [vacumnBot.currentLine];
+  //   return a.next().value;
 }
