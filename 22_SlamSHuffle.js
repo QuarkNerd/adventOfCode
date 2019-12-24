@@ -1,5 +1,7 @@
 const input = getInput();
 
+console.log(101741582076661 % 40);
+
 solvePartOne();
 solvePartTwo();
 function solvePartOne() {
@@ -47,40 +49,49 @@ function solvePartOne() {
 }
 
 function solvePartTwo() {
-  const iii = 2020;
-  let index = 2020;
+  const visitedIndicies = {};
+  let cardIndex = 2020;
   const NUMCARDS = 119315717514047;
-  for (let i = 0; i < 10000; i++) {
-    input.forEach(instruction => {
+  const instructionList = input.reverse();
+  for (let i = 0; i < 60; i++) {
+    instructionList.forEach(instruction => {
       let [action, parameter] = getInstructionDetails(instruction);
       switch (action) {
         case "deal into new stack":
-          index = newStack(index);
+          cardIndex = newStack(cardIndex);
           break;
         case "cut":
-          index = cutNCards(index, parameter);
+          cardIndex = cutNCards(cardIndex, parameter);
           break;
         case "deal with increment":
-          index = dealWithIncN(index, parameter);
+          cardIndex = dealWithIncN(cardIndex, parameter);
           break;
       }
     });
-    if (index == iii) {
-      console.log(22);
+
+    if (visitedIndicies[cardIndex] !== undefined) {
+      // console.log(visitedIndicies[cardIndex], i);
+    } else {
+      visitedIndicies[cardIndex] = i;
     }
   }
-  console.log(index);
+  console.log(cardIndex);
 
+  // these function reverse
   function newStack(index) {
     return NUMCARDS - 1 - index;
   }
 
   function cutNCards(index, N) {
-    return (index - N + NUMCARDS) % NUMCARDS;
+    return (index + N + NUMCARDS) % NUMCARDS;
   }
 
   function dealWithIncN(index, N) {
-    return (index * N) % size;
+    let num = index;
+    while (num % N !== 0) {
+      num += size;
+    }
+    return parseInt(num / N);
   }
 }
 
