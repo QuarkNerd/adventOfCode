@@ -15,6 +15,46 @@ function solvePartOne() {
 function solvePartTwo() {
   const nodeConnections = vacumnBot.getNodeConnections();
   intcode[0] = 2;
+  const path = [vacumnBot.robotStart];
+  const nodesLeftToVisit = Object.keys(nodeConnections)
+    .filter(node => node !== vacumnBot.robotStart)
+    .reduce((acc, node) => Object.assign(acc, { [node]: true }), {});
+
+  while (Object.keys(nodesLeftToVisit).length > 0) {
+    //abstract into fuction to shate with day 15
+    let searching = true;
+    const lastNode = path[path.length - 1];
+    let positionsToSearch = getTargetsAndPath(lastNode);
+
+    let pathSegment = null;
+    while (searching) {
+      for (let i = 0; i < positionsToSearch.length; i++) {
+        const { path, node } = positionsToSearch[i];
+        if (nodesLeftToVisit[node]) {
+          nodesLeftToVisit[node] = false;
+          pathSegment = path;
+          searching = false;
+          break;
+        }
+      }
+      positionsToSearch = positionsToSearch
+        .map(({ node, path }) => getTargetsAndPath(node, path))
+        .flat();
+
+      // remove duplicates
+      positionsToSearch = postMessage.filter(
+        (pos, i) => positionsToSearch.indexOf(pos) === i
+      );
+    }
+  }
+
+  // get a bettername
+  function getTargetsAndPath(node, pathToHere = []) {
+    return nodeConnections[node].map(node => ({
+      node,
+      path: pathToHere.concat([node])
+    }));
+  }
   //   const a = utilities.generateFromArray(
   //     ["A,B,C", "R,8", "R,3", "3", "y", ""]
   //       .join("\n")
