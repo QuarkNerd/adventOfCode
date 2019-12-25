@@ -4,27 +4,31 @@ const input = `##.#.
 #..#.
 .##..`;
 let state = input.split("\n");
-const statesHash = {};
-do {
-  statesHash[state.join("")] = true;
-  state = getNewState(state);
-} while (statesHash[state.join("")] === undefined);
-const bioDiversity = state
-  .join("")
-  .split("")
-  .reduce((acc, square, i) => acc + (square === "#" ? Math.pow(2, i) : 0), 0);
-console.log(bioDiversity);
 
-function getNewState(prevState) {
-  const newState = [];
-  for (let i = 0; i < prevState.length; i++) {
-    let row = "";
-    for (let j = 0; j < prevState[0].length; j++) {
-      row = row + getNewBugState(i, j);
+solvePartOne();
+function solvePartOne() {
+  const statesHash = {};
+  do {
+    statesHash[state.join("")] = true;
+    state = getNewState(state);
+  } while (statesHash[state.join("")] === undefined);
+  const bioDiversity = state
+    .join("")
+    .split("")
+    .reduce((acc, square, i) => acc + (square === "#" ? Math.pow(2, i) : 0), 0);
+  console.log(bioDiversity);
+
+  function getNewState(prevState) {
+    const newState = [];
+    for (let i = 0; i < prevState.length; i++) {
+      let row = "";
+      for (let j = 0; j < prevState[0].length; j++) {
+        row = row + getNewBugState(i, j);
+      }
+      newState.push(row);
     }
-    newState.push(row);
+    return newState;
   }
-  return newState;
 }
 
 function getNewBugState(i, j) {
@@ -51,4 +55,22 @@ function getNeighboursNum(i, j) {
     }
   });
   return neighbours;
+}
+
+class ErisBugGrid {
+  constructor(intialState) {
+    this.state = intialState.split("\n");
+  }
+
+  update = updateOuter => {
+    const newState = [];
+    for (let i = 0; i < prevState.length; i++) {
+      let row = "";
+      for (let j = 0; j < prevState[0].length; j++) {
+        row = row + getNewBugState(i, j);
+      }
+      newState.push(row);
+    }
+    return newState;
+  };
 }
