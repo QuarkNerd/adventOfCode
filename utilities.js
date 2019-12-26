@@ -420,6 +420,24 @@ class RepairDroid {
   }
 }
 
+class ErisBugGrid {
+  constructor(intialState) {
+    this.state = intialState.split("\n");
+  }
+
+  update = updateOuter => {
+    const newState = [];
+    for (let i = 0; i < prevState.length; i++) {
+      let row = "";
+      for (let j = 0; j < prevState[0].length; j++) {
+        row = row + getNewBugState(i, j);
+      }
+      newState.push(row);
+    }
+    return newState;
+  };
+}
+
 function* generateFromArray(array) {
   var index = 0;
   while (index < array.length) {
@@ -479,6 +497,27 @@ function setValue(intcode, value, ID, parameterMode, relativeBase) {
   }
 }
 
+function getMinimumSteps(connectedNodes, startPosition, endPosition) {
+  let steps = 0;
+  let searching = true;
+  let positionsToSearch = [startPosition];
+  const positionsSearched = {};
+  while (positionsToSearch.length !== 0 && searching) {
+    positionsToSearch.forEach(pos => {
+      positionsSearched[pos] = true;
+      if (pos === endPosition) {
+        searching = false;
+      }
+    });
+    positionsToSearch = positionsToSearch
+      .map(pos => connectedNodes(pos))
+      .flat()
+      .filter(pos => positionsSearched[pos] === undefined);
+    steps++;
+  }
+  return { success: !searching, steps: steps - 1 };
+}
+
 module.exports = {
   computeIntcode,
   Robot,
@@ -486,5 +525,7 @@ module.exports = {
   VacumnBot,
   SpringDroid,
   RepairDroid,
-  generateFromArray
+  ErisBugGrid,
+  generateFromArray,
+  getMinimumSteps
 };
