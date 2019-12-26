@@ -13,44 +13,21 @@ const GRAPH = repairDroid.graph;
 
 solvePartOne();
 function solvePartOne() {
-  let searching = true;
-  let steps = 0;
-  let positionsToSearch = ["0,0"];
-  const positionsSearched = {};
-  while (searching) {
-    positionsToSearch.forEach(pos => {
-      positionsSearched[pos] = true;
-      if (pos === repairDroid.oxygenCoorHash) {
-        searching = false;
-        console.log(steps);
-      }
-    });
-    positionsToSearch = positionsToSearch
-      .map(pos => GRAPH[pos].connectedNodes)
-      .flat()
-      .filter(pos => positionsSearched[pos] === undefined);
-    steps++;
-  }
+  console.log(
+    utilities.getMinimumSteps(
+      pos => GRAPH[pos].connectedNodes,
+      "0,0",
+      repairDroid.oxygenCoorHash
+    )
+  );
 }
 
 solvePartTwo();
 function solvePartTwo() {
-  let spreading = true;
-  let mins = 0;
-  let nextPosToFill = [repairDroid.oxygenCoorHash];
-  const positionsFilled = {};
-  while (spreading) {
-    nextPosToFill.forEach(pos => {
-      positionsFilled[pos] = true;
-    });
-    nextPosToFill = nextPosToFill
-      .map(pos => GRAPH[pos].connectedNodes)
-      .flat()
-      .filter(pos => positionsFilled[pos] === undefined);
-    if (nextPosToFill.length === 0) {
-      console.log(mins);
-      spreading = false;
-    }
-    mins++;
-  }
+  console.log(
+    utilities.getMinimumSteps(
+      pos => GRAPH[pos].connectedNodes,
+      repairDroid.oxygenCoorHash
+    )
+  );
 }

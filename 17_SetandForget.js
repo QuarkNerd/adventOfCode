@@ -13,6 +13,7 @@ function solvePartOne() {
   console.log(vacumnBot.getSumAllignParam());
 }
 function solvePartTwo() {
+  // does not work
   const nodeConnections = vacumnBot.getNodeConnections();
   intcode[0] = 2;
   const path = [vacumnBot.robotStart];

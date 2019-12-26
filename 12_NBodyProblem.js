@@ -1,3 +1,4 @@
+const utilities = require("./utilities");
 solvePartOne();
 solvePartTwo();
 
@@ -69,10 +70,9 @@ function updateVelocityOfPair(moon1, moon2, dim) {
 }
 
 function getLCM(numbers) {
-  let base = Math.max(...numbers);
-  let i = 1;
-  while (!numbers.every(number => (base * i) % number === 0)) i++;
-  return base * i;
+  const multi = numbers.reduce((a, b) => a * b);
+  const HCF = utilities.getHCF(numbers);
+  return multi / Math.pow(HCF, numbers.length - 1);
 }
 
 function convertStateToString(state) {

@@ -497,7 +497,7 @@ function setValue(intcode, value, ID, parameterMode, relativeBase) {
   }
 }
 
-function getMinimumSteps(connectedNodes, startPosition, endPosition) {
+function getMinimumSteps(connectedNodes, startPosition, endPosition = null) {
   let steps = 0;
   let searching = true;
   let positionsToSearch = [startPosition];
@@ -515,7 +515,28 @@ function getMinimumSteps(connectedNodes, startPosition, endPosition) {
       .filter(pos => positionsSearched[pos] === undefined);
     steps++;
   }
-  return { success: !searching, steps: steps - 1 };
+  return { success: !searching || !endPosition, steps: steps - 1 };
+}
+
+function getHCF(numbers) {
+  let a = numbers[0];
+  for (var i = 1; i < numbers.length; i++) {
+    b = numbers[i];
+    a = getHCF2Numbers(a, b);
+  }
+  return a;
+}
+function getHCF2Numbers(a, b) {
+  a = Math.abs(a);
+  b = Math.abs(b);
+  const limit = Math.min(a, b);
+  let currentHighest = 1;
+  for (let i = 2; i <= limit; i++) {
+    if (a % i == 0 && b % i == 0) {
+      currentHighest = i;
+    }
+  }
+  return currentHighest;
 }
 
 module.exports = {
@@ -527,5 +548,6 @@ module.exports = {
   RepairDroid,
   ErisBugGrid,
   generateFromArray,
-  getMinimumSteps
+  getMinimumSteps,
+  getHCF
 };

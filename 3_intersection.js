@@ -5,8 +5,7 @@ const B =
 
 const wireA = A.split(",");
 const wireB = B.split(",");
-// console.log(wireA.length, wireB.length);
-console.time();
+
 let Asteps;
 let Bsteps; // number of steps taken to get to the corrosponding coordinate on wire B, first value is 0
 let wireAcoor;
@@ -15,7 +14,7 @@ let wireBcoor;
 [Asteps, wireAcoor] = makeCoorList(wireA);
 [Bsteps, wireBcoor] = makeCoorList(wireB);
 
-// while wireB is going Left-right
+// while wireB is horizontaly
 const intersections = []; // location of intersections
 let distances = []; // mnahattan distance to intersections
 let steps = []; // total steps taken to get to intersection
@@ -40,7 +39,7 @@ for (let i = 0; i < wireBcoor.length - 1; i += 2) {
   }
 }
 
-// while wireB is going up-down
+// while wireB is going vertically
 for (let i = 1; i < wireBcoor.length - 1; i += 2) {
   const B1 = wireBcoor[i];
   const B2 = wireBcoor[i + 1];
@@ -115,17 +114,5 @@ function makeCoorList(directions) {
   return [steps, coors];
 }
 
-// console.log(intersections);
-// console.log(distances);
 console.log(Math.min(...distances));
-console.log(steps);
 console.log(Math.min(...steps));
-console.timeEnd();
-// let aaa = "";
-
-// for (let i = 0; i < wireB.length; i += 2) {
-//   if (wireB[i][0] != "L" && wireB[i][0] != "R") {
-//     console.log("B");
-//     console.log(i);
-//   }
-// }

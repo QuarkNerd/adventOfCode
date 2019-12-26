@@ -1,9 +1,11 @@
+const utilities = require("./utilities");
 const input = getInput();
 const grid = input.replace(/ /g, "").split("\n");
 const width = grid[0].length;
 const height = grid.length;
 
 solvePartOne();
+solvePartTwo();
 
 function solvePartOne() {
   let currentHighest = 0;
@@ -22,8 +24,6 @@ function solvePartOne() {
   }
   console.log("Answer", currentHighest, "Best coordinates", bestCoor);
 }
-
-solvePartTwo();
 
 function solvePartTwo() {
   const bestX = 26;
@@ -71,7 +71,7 @@ function getReducedCoor(x, y) {
   } else if (y == 0) {
     return [Math.sign(x), 0];
   } else {
-    const HCF = getHCF(x, y);
+    const HCF = utilities.getHCF([x, y]);
     return [parseInt(x / HCF), parseInt(y / HCF)];
   }
 }
@@ -95,19 +95,6 @@ function getAngle([x, y]) {
   }
 
   return angleBase + 2 * Math.PI;
-}
-
-function getHCF(a, b) {
-  a = Math.abs(a);
-  b = Math.abs(b);
-  const limit = Math.min(a, b);
-  let currentHighest = 1;
-  for (let i = 2; i <= limit; i++) {
-    if (a % i == 0 && b % i == 0) {
-      currentHighest = i;
-    }
-  }
-  return currentHighest;
 }
 
 function getInput() {

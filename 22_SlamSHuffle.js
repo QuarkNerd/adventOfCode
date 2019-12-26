@@ -1,7 +1,5 @@
 const input = getInput();
 
-console.log(101741582076661 % 40);
-
 solvePartOne();
 solvePartTwo();
 function solvePartOne() {
@@ -52,10 +50,12 @@ function solvePartTwo() {
   const visitedIndicies = {};
   let cardIndex = 2020;
   const NUMCARDS = 119315717514047;
-  const instructionList = input.reverse();
-  for (let i = 0; i < 60; i++) {
-    instructionList.forEach(instruction => {
-      let [action, parameter] = getInstructionDetails(instruction);
+  const instructionList = [...input]
+    .reverse()
+    .map(instruction => getInstructionDetails(instruction));
+  console.log(instructionList);
+  for (let i = 0; i < 1000000; i++) {
+    instructionList.forEach(([action, parameter]) => {
       switch (action) {
         case "deal into new stack":
           cardIndex = newStack(cardIndex);
@@ -66,11 +66,13 @@ function solvePartTwo() {
         case "deal with increment":
           cardIndex = dealWithIncN(cardIndex, parameter);
           break;
+        default:
+          console.log("Error");
       }
     });
 
     if (visitedIndicies[cardIndex] !== undefined) {
-      // console.log(visitedIndicies[cardIndex], i);
+      console.log(visitedIndicies[cardIndex], i);
     } else {
       visitedIndicies[cardIndex] = i;
     }
@@ -89,7 +91,7 @@ function solvePartTwo() {
   function dealWithIncN(index, N) {
     let num = index;
     while (num % N !== 0) {
-      num += size;
+      num += NUMCARDS;
     }
     return parseInt(num / N);
   }
@@ -208,3 +210,15 @@ function getInput() {
   cut 5193
   deal with increment 3`.split("\n");
 }
+
+// size = 10;
+// console.log(new Array(10).fill(undefined).map((_, i) => dealWithIncN(i, 3)));
+
+// function dealWithIncN(index, N) {
+//   let size = 10;
+//   let num = index;
+//   while (num % N !== 0) {
+//     num += size;
+//   }
+//   return parseInt(num / N);
+// }
