@@ -6,27 +6,32 @@ const connectedPortals = {};
 for (let i = 0; i < maze.length; i++) {
   for (let j = 0; j < maze[0].length; j++) {
     if (maze[i][j] === ".") {
-      setConnections(i, j);
+      parse(i, j);
     }
   }
 }
 
-const [start] = connectedPortals["AA"];
-const [end] = connectedPortals["ZZ"];
-
-function solvePartOne() {
-  [["AA"], ["ZZ"]].forEach(code => delete connectedPortals[code]);
-
-  Object.values(connectedPortals).forEach(([coor1, coor2]) => {
-    connectedNodes[coor1].push(coor2);
-    connectedNodes[coor2].push(coor1);
+console.log(connectedPortals);
+const portals = Object.entries(connectedPortals);
+const matrix = {};
+portals.forEach(a => {
+  matrix[a[0]] = {};
+  portals.forEach(b => {
+    if (a[0] === b[0]) return;
+    const result = utilities.getMinimumSteps(
+      pos => connectedNodes[pos],
+      a[1],
+      b[1]
+    );
+    if (result.success) {
+      matrix[a[0]][b[0]] = result.steps;
+    }
   });
-  console.log(
-    utilities.getMinimumSteps(pos => connectedNodes[pos], start, end)
-  );
-}
+});
 
-function setConnections(i, j) {
+console.log(JSON.stringify(matrix));
+
+function parse(i, j) {
   connectedNodes[`${i},${j}`] = [];
   [
     [1, 0],
@@ -44,10 +49,15 @@ function setConnections(i, j) {
           maze[i + 2 * iShift][j + 2 * jShift]
         ];
         if (iShift === -1 || jShift === -1) portalCode.reverse();
-        const portal = portalCode.join("");
+        let portal = portalCode.join("");
+        if (i > 3 && i < maze.length - 3 && j > 3 && j < maze[0].length - 3) {
+          portal += "I";
+        } else {
+          portal += "O";
+        }
         if (connectedPortals[portal] === undefined) {
-          connectedPortals[portal] = [`${i},${j}`];
-        } else connectedPortals[portal].push(`${i},${j}`);
+          connectedPortals[portal] = `${i},${j}`;
+        } else console.log("SCREAM!");
       }
     }
   });
