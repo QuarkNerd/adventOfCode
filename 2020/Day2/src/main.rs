@@ -13,8 +13,8 @@ fn main() {
     for puzzle_unit in data {
         let PuzzleUnit { password, min, max, letter } = puzzle_unit;
         let letter_count = password.matches(puzzle_unit.letter).count() as usize;
-        let char_one = &password[((min-1) as usize)..((min) as usize)];
-        let char_two = &password[((max-1) as usize)..((max) as usize)];
+        let char_one = &password[(min-1)..min];
+        let char_two = &password[(max-1)..max];
 
         if letter_count <= max && letter_count >= min { part_one_counter +=1 }
         if (char_one.matches(letter).count() + char_two.matches(letter).count()) == 1 { part_two_counter +=1 }
