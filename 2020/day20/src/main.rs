@@ -19,41 +19,42 @@ impl ClockwiseTwist {
         }
     }
 
-    fn from(num: u8)  -> ClockwiseTwist {
+    fn from(mut num: u8)  -> ClockwiseTwist {
+        num = num % 4;
         match num {
             0 => ClockwiseTwist::Zero,
             1 => ClockwiseTwist::One,
             2 => ClockwiseTwist::Two,
             3 => ClockwiseTwist::Three,
-            nu => panic!("Invalid number to convert to twist: {}", nu)
+            _ => panic!("Maths has stopped working")
         }
     }
 }
 
-// make this generic
-// and add all functions
-struct SideToTileHash {
-    hash: HashMap<String, Vec<u64>>,
+struct SideToTileHash<T> {
+    hash: HashMap<String, T>,
 }
 
-impl SideToTileHash {
-    fn get_mut(&mut self, key: &String) -> Option<&mut Vec<u64>>{
+impl<T> SideToTileHash<T> {
+    fn get_mut(&mut self, key: &String) -> Option<&mut T>{
         let first = self.hash.get(key);
         if first.is_some() {return self.hash.get_mut(key);};
         self.hash.get_mut(&reverse(&key))
     }
 
-    fn get(&mut self, key: &String) -> Option<&Vec<u64>>{
+    fn get(&mut self, key: &String) -> Option<&T>{
         let first = self.hash.get(key);
         if first.is_some() {return self.hash.get(key);};
         self.hash.get(&reverse(&key))
     }
 
-    fn insert(&mut self, key: String, value: Vec<u64>) -> Option<Vec<u64>> {
+    fn insert(&mut self, key: String, value: T) -> Option<T> {
         self.hash.insert(key, value)
     }
 }
 
+// Stores the four edges, staring at the top and going in a clockwise. Also define whether that edges stored are
+// after any transformation
 struct Edges {
     flip_first: bool,
     rotation: ClockwiseTwist,
@@ -125,8 +126,8 @@ impl Edges {
 
 fn main() {
     
-    let tiles = INP.split("\n\n");
-    let mut side_to_tile_hash: SideToTileHash = SideToTileHash { hash: HashMap::new()};
+    let tiles = INPUT.split("\n\n");
+    let mut side_to_tile_hash: SideToTileHash<Vec<u64>> = SideToTileHash { hash: HashMap::new()};
     let mut tile_to_edges_hash: HashMap<u64, Edges> = HashMap::new();
     let mut tile_to_inner_image_hash: HashMap<u64, Vec<String>> = HashMap::new();
     for ti in tiles {
@@ -139,8 +140,6 @@ fn main() {
         tile_to_edges_hash.insert(tile_num, Edges::new(edges.clone()));
         tile_to_inner_image_hash.insert(tile_num, strip_edges(&tile));
 
-        println!("{:?}", strip_edges(&tile));
-
         for edge in edges {
             if let Some(tile_num_vec) = side_to_tile_hash.get_mut(&edge) {
                 tile_num_vec.push(tile_num);
@@ -152,6 +151,7 @@ fn main() {
         };
     }
 
+    // Simply determine the tiles with 2 unmatched sides
     let mut tiles_with_unmatched_sides = HashSet::new(); 
     let mut corner_multi = 1;
     let mut first_corner_tile = 0;
@@ -182,7 +182,7 @@ fn main() {
     let mut aligning_edge: String;
     let mut current_tile = first_corner_tile;
 
-    let mut image: Vec<Vec<u64>> = Vec::new();
+    let mut image_tiles: Vec<Vec<u64>> = Vec::new();
     let mut row: Vec<u64> = Vec::new();
     row.push(current_tile);
     
@@ -201,7 +201,7 @@ fn main() {
         }
         
         let initial_tile_of_last_row = row[0];
-        image.push(row);
+        image_tiles.push(row);
         let lower_edge_to_match = tile_to_edges_hash.get(&initial_tile_of_last_row).unwrap().sides[2].clone();
 
 
@@ -217,28 +217,128 @@ fn main() {
             }
         
     }
+    
+    // generate final_image
+    let mut image = image_tiles.into_iter().map(|x| {
 
-    println!("{:?}", image);   
+        let tiles: Vec<_> = x.into_iter().map(|num| {
+            let edges = tile_to_edges_hash.get(&num).unwrap();
+            let image = tile_to_inner_image_hash.get(&num).unwrap();
+            
+            apply_transformation(&image, edges.rotation , edges.flip_first)
+        }).collect();
+        
+        let mut aa = Vec::new();
+        
+        for i in 0..tiles[0].len() {
+            let mut img = "".to_string();
+            for t in &tiles {
+                img.push_str(&t[i]);
+            }
+            aa.push(img);
+        }
+        
+        aa
+        
+    }).flat_map(|x| x).collect::<Vec<_>>();
+    
+    let mut hashes_of_sea_monster = HashSet::new();
+    let mut max_coor = (0,0);
+    for (i, row) in INPUT_SEA_MONSTER.split('\n').enumerate() {
+        for (j, cha) in row.chars().enumerate() {
+            if cha == '#' {
+                hashes_of_sea_monster.insert((i,j));
+                if j > max_coor.1 { max_coor.1  = j };
+                if i > max_coor.0 { max_coor.0  = i };
+            }
+        };
+    };
+
+    let image_len = image.len();
+
+    
+    let mut monsters_count = 0;
+    
+    for i in 0..8 {
+        for x in 0..image_len-max_coor.0 {
+            for y in 0..image_len-max_coor.1 {
+                let mut monster_found = true;
+                for coor in hashes_of_sea_monster.iter() {
+
+                    if &image[y + coor.1][(x + coor.0)..(x + coor.0 +1)] != "#" {
+                        monster_found = false;
+                        break;
+                    }
+                }
+
+                if monster_found {monsters_count +=1;};
+            }
+        }
+
+
+        if monsters_count != 0 {
+            break;
+        }
+
+        image = apply_transformation(&image, ClockwiseTwist::One, false);
+        
+        if i == 3 {
+            image = apply_transformation(&image, ClockwiseTwist::Zero, true);
+        }
+    }
+
+    if monsters_count == 0 {
+        panic!("No monsters found")
+    }
+    
+    let hashes_count = image.iter().fold(0, |acc, x| acc + x.matches('#').count());
+    
+    
+    println!("Part Two: {}", hashes_count - monsters_count*hashes_of_sea_monster.len());
 }
-//: impl Iterator<Item = String>
 
-fn apply_transformation<'a>(tile: &Vec<&'a str>, rot: ClockwiseTwist, flip_first: bool) -> Vec<String> {
-    let mut tile = tile.iter().map(|x| x.to_string());
+fn apply_transformation<'a>(tile: &Vec<String>, rot: ClockwiseTwist, flip_first: bool) -> Vec<String> {
+    let string_tile = tile.iter().map(|x| x.to_string());
+
     match rot {
         ClockwiseTwist::Zero => {
             if flip_first {
-                tile = tile.map(|x| reverse(&x)); // ask why this fails
+                return string_tile.map(|x| reverse(&x)).collect();
             };
+            string_tile.collect()
         },
         ClockwiseTwist::Two => {
-            if !flip_first {
-                tile = tile.map(|x| reverse(&x));
+            if flip_first {
+                return string_tile.rev().collect();
             };
-            tile.rev();
-        }
-    };
+            return string_tile.map(|x| reverse(&x)).rev().collect();
+        },
+        ClockwiseTwist::One => {
+            let mut return_tile = Vec::new();
 
-    tile.collect()
+            for i in 0..string_tile.len() {
+                return_tile.push(reverse(&get_column(&tile.iter().map(|x| x.as_str()).collect(), i)));
+            }
+
+            if !flip_first {
+                return return_tile;
+            };
+            return return_tile.into_iter().rev().collect();
+        },
+        ClockwiseTwist::Three => {
+            let mut return_tile = Vec::new();
+
+            for i in 0..string_tile.len() {
+                return_tile.push(get_column(&tile.iter().map(|x| x.as_str()).collect(), string_tile.len() - i - 1))
+            }
+
+            if flip_first {
+                return return_tile.into_iter().rev().collect();
+            };
+            return return_tile;
+        }
+    }
+
 }
 
 fn get_edges<'a>(tile: &Vec<&'a str>) -> Vec<String> {
@@ -285,114 +385,10 @@ fn reverse(str: &String) -> String {
     str.chars().rev().collect::<String>()
 }
 
-static INP: &str =
-"Tile 2311:
-..##.#..#.
-##..#.....
-#...##..#.
-####.#...#
-##.##.###.
-##...#.###
-.#.#.#..##
-..#....#..
-###...#.#.
-..###..###
-
-Tile 1951:
-#.##...##.
-#.####...#
-.....#..##
-#...######
-.##.#....#
-.###.#####
-###.##.##.
-.###....#.
-..#.#..#.#
-#...##.#..
-
-Tile 1171:
-####...##.
-#..##.#..#
-##.#..#.#.
-.###.####.
-..###.####
-.##....##.
-.#...####.
-#.##.####.
-####..#...
-.....##...
-
-Tile 1427:
-###.##.#..
-.#..#.##..
-.#.##.#..#
-#.#.#.##.#
-....#...##
-...##..##.
-...#.#####
-.#.####.#.
-..#..###.#
-..##.#..#.
-
-Tile 1489:
-##.#.#....
-..##...#..
-.##..##...
-..#...#...
-#####...#.
-#..#.#.#.#
-...#.#.#..
-##.#...##.
-..##.##.##
-###.##.#..
-
-Tile 2473:
-#....####.
-#..#.##...
-#.##..#...
-######.#.#
-.#...#.#.#
-.#########
-.###.#..#.
-########.#
-##...##.#.
-..###.#.#.
-
-Tile 2971:
-..#.#....#
-#...###...
-#.#.###...
-##.##..#..
-.#####..##
-.#..####.#
-#..#.#..#.
-..####.###
-..#.#.###.
-...#.#.#.#
-
-Tile 2729:
-...#.#.#.#
-####.#....
-..#.#.....
-....#..#.#
-.##..##.#.
-.#.####...
-####.#.#..
-##.####...
-##..#.##..
-#.##...##.
-
-Tile 3079:
-#.#.#####.
-.#..######
-..#.......
-######....
-####.#..#.
-.#...#.##.
-#.#####.##
-..#.###...
-..#.......
-..#.###...";
+static INPUT_SEA_MONSTER: &str = 
+"                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   ";
 
 static INPUT: &str =
 "Tile 3557:

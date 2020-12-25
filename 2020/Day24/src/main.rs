@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 struct Coor {
     x: i32,
@@ -32,10 +31,10 @@ impl Direction {
 fn main() {
     let input = get_input();
     let mut black_tiles_hash = HashSet::new();
-
+    
     for tile_dir in input {
         let mut coor = Coor {x: 0, y:0};
-
+        
         for step in tile_dir {
             match step {
                 Direction::East => coor.x +=1,
@@ -52,12 +51,12 @@ fn main() {
                 },
             };
         };
-
+        
         if !black_tiles_hash.insert(coor.clone()) {
             black_tiles_hash.remove(&coor);
         }
     }
-
+    
     println!("Part One: {:?}", black_tiles_hash.len());
     
     for _ in 0..100 {
@@ -76,7 +75,7 @@ fn step(black_tiles_hash: &HashSet<Coor>) -> HashSet<Coor> {
             let neigh_count = count_neighbours(black_tiles_hash, &coor );
             let currently_black = black_tiles_hash.contains(&coor);
 
-            if (currently_black && (neigh_count == 1 || neigh_count == 2)) || (!currently_black && neigh_count == 2) {
+            if (currently_black && neigh_count == 1) || neigh_count == 2 {
                 new_hash.insert(coor);
             }
         }

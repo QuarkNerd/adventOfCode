@@ -29,8 +29,6 @@ fn calculate_expression_with_brackets<'a>(exp: &'a str, expression_calculator:fn
 
     while let Some(cap) = CAPTURE_BRACKETS_REGEX.captures(&current) {
         let m = cap.get(1).unwrap().as_str();
-        //println!("m = {}", m);
-        //println!("m_part = {}", &m[1..m.len()]);
         let val = expression_calculator(&m[1..m.len()-1]);
         current = current.replace(m, &val.to_string());
         
