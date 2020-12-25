@@ -1,143 +1,66 @@
 use std::collections::HashSet;
 use std::collections::HashMap;
-use std::time::Instant;
+use pcre2::bytes::Regex;
 
-
-// struct Node {
-    //     a: Option<Box<Node>>,
-    //     b: Option<Box<Node>>,
-    //     can_terminate: bool
-    // }
-    
 fn main() {
-    let now = Instant::now();
-        
+    let recursive_additions = "8: 42 8\n11: 42 11 31";
+
     let inp: Vec<_> = INPUT.split("\n\n").collect();
     let mut rule_dict = HashMap::new();
+
     for rule in inp[0].split('\n')  {
         let split: Vec<_> = rule.split(": ").collect();
         rule_dict.insert(split[0], split[1].to_string());
     }
-    let mut memoised_res = HashMap::new();
-    let possible_messages = get_allowed(&rule_dict, "0",&mut memoised_res);
-    let possible_messages: HashSet<_> = possible_messages.iter().map(|x| x.as_str()).collect();
-    let messages: HashSet<_> = inp[1].split('\n').into_iter().collect();
-    let valid_messages: HashSet<_> = messages.intersection(&possible_messages).collect();
-    let invalid_messages: HashSet<_> = messages.difference(&possible_messages).collect();
+            
+    let possible_message_regex = get_allowed_regex_string(&rule_dict, "0");
+    let reg =  Regex::new(&format!(r"^{}$", possible_message_regex)).unwrap();
+    
+    let messages: HashSet<_> = inp[1].split('\n').into_iter().filter(|x| {
+         reg.is_match(x.as_bytes()).unwrap()
+    }).collect();
+        
+    println!("Part One: {}", messages.len());
 
-    println!("{:?}", now.elapsed());
-    println!("Part One: {}", valid_messages.len());
-    println!("Part One: {}", invalid_messages.len());
-    
-    let repetition_possible: Vec<_> = possible_messages.iter().filter(|x| x.contains("%%")).collect();
-    println!("Part One: {}", &repetition_possible[5]);
-    
-    for r in repetition_possible {
-        for a in &invalid_messages {
-            let a = 66+88;
-        }
+    for change in recursive_additions.split('\n') {
+        let split: Vec<_> = change.split(": ").collect();
+        rule_dict.insert(split[0], format!("{} | {}", rule_dict[split[0]], split[1]));
     }
 
-
-    // for line in INPUT_NEW_RULES.split('\n') {
-    //     let split: Vec<_> = line.split(": ").collect();
-    //     let rule_name = split[0];
-    //     let options: Vec<_> = split[1].split(" | ").collect();
-
-    //     let mut options_to_insert = Vec::new();
-    //     let original_rule = options[0];
-    //     options_to_insert.push(original_rule.to_string());
-
-    //     let new_rule =  options[1];
-
-    //     let subrules: Vec<_> = new_rule.split(' ').collect();
-
-    //     //let mut unit_length = 0;
-    //     for subru in subrules {
-    //         if subru != rule_name {
-    //             //unit_length += memoised_res.get(&subru).iter().len();
-    //             //println!("{:?}", memoised_res.get(&subru));
-    //         }
-    //     }
-
-    //     //let times = max_len/unit_length;
-    //     //println!("{}", times);
-    //     //println!("{}", max_len);
-
-    //     let mut new_opt = new_rule.to_string();
-
-    //     let mut rule_plus_space = " ".to_owned();
-    //     rule_plus_space.push_str(rule_name);
-    //     for _ in 0..2 {
-    //         new_opt = new_opt.replace(rule_name, new_rule);
-
-    //         options_to_insert.push(new_opt.replace(&rule_plus_space, ""));
-    //     }
-
-    //     println!("{}--{}", rule_name, options_to_insert.join(" | "));
-    //     rule_dict.insert(rule_name,options_to_insert.join(" | "));
-    // }
-
-
-    // let mut memoised_res = HashMap::new();
-    // let a = get_allowed(&rule_dict, "0",&mut memoised_res);
-    // let a: HashSet<_> = a.iter().map(|x| x.as_str()).collect();
-
-    // let b: HashSet<_> = inp[1].split('\n').into_iter().collect();
-
-    // let c: Vec<_> = a.intersection(&b).into_iter().collect();
-    // println!("Part One: {}", c.len());
+    let possible_message_regex = get_allowed_regex_string(&rule_dict, "0");
+    let reg =  Regex::new(&format!(r"^{}$", possible_message_regex)).unwrap();
+    
+    let messages: HashSet<_> = inp[1].split('\n').into_iter().filter(|x| {
+         reg.is_match(x.as_bytes()).unwrap()
+    }).collect();
+        
+    println!("Part Two: {}", messages.len());
 }
 
-fn get_allowed<'a, 'b>(rule_dict: &'a HashMap<&'a str, String>, rule_name: &'a str, memoised_res: &mut HashMap<&'a str,  Vec<String> >) -> Vec<String> {
+
+fn get_allowed_regex_string<'a>(rule_dict: &'a HashMap<&'a str, String>, rule_name: &'a str) -> String {
     let rule = &rule_dict[rule_name];
     if &rule[0..1] == "\"" {
-        let mut a = Vec::new();
-        a.push(rule[1..2].to_owned());
-        return a;
+       return rule[1..2].to_owned();
     };
 
-    
-    if let Some(allowed) = memoised_res.get(rule_name) {
-        return allowed.clone();
+    let mut recursive = false;
+    let regex = rule.split(" | ").map(|option| {
+        option.split(' ').map(|subrule| {
+            if subrule == rule_name {
+                recursive = true;
+                format!("(?&Rule{})?", rule_name)
+            } else {
+                get_allowed_regex_string(rule_dict, subrule)
+            }
+        }).collect::<Vec<_>>().join("")
+    }).collect::<Vec<_>>().join("|");
+
+    if recursive {
+        format!("(?P<Rule{}>{})", rule_name,regex)
+    } else {
+        format!("(?:{})", regex)
     }
-
-    let mut ret = Vec::new();
-    let options: Vec<_> = rule.split(" | ").collect();
-
-    for opt in &options {
-        let subrules: Vec<_> = opt.split(' ').collect();
-
-        if subrules.iter().any(|&i| i==rule_name) {
-            let mut rep_marker = "%%".to_owned();
-            rep_marker.push_str(opt);
-            rep_marker.push_str("%%");
-            ret.push(rep_marker);
-        } else {
-
-            
-            let mut al = Vec::new();
-            al.push("".to_string());
-            
-            let mut al = subrules.iter().fold(al, |acc, subrule| {
-                let mut combined = Vec::new();
-                let allowed_by_subrule = get_allowed(rule_dict, subrule, memoised_res);
-                for rule_one in acc {
-                    for two in &allowed_by_subrule {
-                        let mut r = rule_one.clone();
-                        r.push_str(two);
-                        combined.push(r);
-                    }
-                }
-                combined
-            });
-            
-            ret.append(&mut al);
-        }
-    };
-
-    memoised_res.insert(&rule_name, ret.clone());
-    ret
 }
 
 static INPUT: &str = 
@@ -169,7 +92,7 @@ static INPUT: &str =
 75: 87 117 | 51 54
 0: 8 11
 91: 117 54 | 117 117
-8: 42 | 42 8
+8: 42
 38: 40 56
 1: 54 73 | 117 85
 132: 117 104 | 54 17
@@ -215,7 +138,7 @@ static INPUT: &str =
 66: 56 54 | 54 117
 79: 91 117 | 64 54
 128: 117 48 | 54 127
-11: 42 31 | 42 11 31
+11: 42 31
 70: 117 97 | 54 118
 6: 62 54 | 7 117
 116: 117 101 | 54 133
