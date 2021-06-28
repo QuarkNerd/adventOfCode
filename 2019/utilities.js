@@ -1,4 +1,4 @@
-function computeIntcode(intcode, getInput, output) {
+function computeIntcode(intcode, getInput, output, runAutomatically = true) {
   let C = intcode;
   let relativeBase = 0;
   let i = 0;
@@ -6,7 +6,18 @@ function computeIntcode(intcode, getInput, output) {
   let opcode;
   let instruction;
   let parameterModes = { 1: undefined, 2: undefined };
-  while (i < C.length) {
+
+  if (!runAutomatically) return step;
+
+  let cont = true;
+  while (cont) {
+    cont = step();
+  }
+
+  return C;
+
+  function step() {
+    if (i >= C.length) return false;
     instruction = C[i];
     leave = false;
     opcode = instruction % 100;
@@ -88,11 +99,8 @@ function computeIntcode(intcode, getInput, output) {
       default:
         console.log("Default");
     }
-    if (leave) {
-      break;
-    }
+    return !leave
   }
-  return C;
 }
 
 // Some of these classes can probably inherit some grid functionality and drawing functionality
