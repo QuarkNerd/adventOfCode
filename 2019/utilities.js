@@ -97,7 +97,7 @@ function computeIntcode(intcode, getInput, output, runAutomatically = true) {
         leave = true;
         break;
       default:
-        console.log("Default");
+        throw new Error("invalid code");
     }
     return !leave
   }
