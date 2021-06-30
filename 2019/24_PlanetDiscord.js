@@ -1,12 +1,12 @@
-const input = `##.#.
-.#.##
-.#...
-#..#.
-.##..`;
-let state = input.split("\n");
+const input = `#.#..
+.....
+.#.#.
+.##..
+.##.#`;
 
 solvePartOne();
 function solvePartOne() {
+  let state = input.split("\n");
   const statesHash = {};
   do {
     statesHash[state.join("")] = true;
@@ -23,54 +23,37 @@ function solvePartOne() {
     for (let i = 0; i < prevState.length; i++) {
       let row = "";
       for (let j = 0; j < prevState[0].length; j++) {
-        row = row + getNewBugState(i, j);
+        const neighborsCount = getNeighborsCount(i, j, prevState);
+        row = row + getNewBugState(prevState[i][j], neighborsCount);
       }
       newState.push(row);
     }
     return newState;
   }
-}
 
-function getNewBugState(i, j) {
-  let bugState = state[i][j];
-  const neighbours = getNeighboursNum(i, j);
-  if (bugState === "#" && neighbours !== 1) return ".";
-  if (bugState === "." && (neighbours === 1 || neighbours === 2)) return "#";
-  return bugState;
-}
-
-function getNeighboursNum(i, j) {
-  let neighbours = 0;
-  [
-    [0, -1],
-    [0, 1],
-    [-1, 0],
-    [1, 0]
-  ].forEach(([iShift, jShift]) => {
-    if (
-      state[i + iShift] !== undefined &&
-      state[i + iShift][j + jShift] === "#"
-    ) {
-      neighbours += 1;
-    }
-  });
-  return neighbours;
-}
-
-class ErisBugGrid {
-  constructor(intialState) {
-    this.state = intialState.split("\n");
+  function getNeighborsCount(i, j, prevState) {
+    let neighbors = 0;
+    [
+      [0, -1],
+      [0, 1],
+      [-1, 0],
+      [1, 0],
+    ].forEach(([iShift, jShift]) => {
+      if (
+        prevState[i + iShift] !== undefined &&
+        prevState[i + iShift][j + jShift] === "#"
+      ) {
+        neighbors += 1;
+      }
+    });
+    return neighbors;
   }
 
-  update = updateOuter => {
-    const newState = [];
-    for (let i = 0; i < prevState.length; i++) {
-      let row = "";
-      for (let j = 0; j < prevState[0].length; j++) {
-        row = row + getNewBugState(i, j);
-      }
-      newState.push(row);
-    }
-    return newState;
-  };
+}
+
+function getNewBugState(currentState, neighborsCount) {
+  let newState = currentState;
+  if (newState === "#" && neighborsCount !== 1) return ".";
+  if (newState === "." && (neighborsCount === 1 || neighborsCount === 2)) return "#";
+  return newState;
 }
