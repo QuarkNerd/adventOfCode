@@ -524,24 +524,6 @@ class RepairDroid {
   }
 }
 
-class ErisBugGrid {
-  constructor(intialState) {
-    this.state = intialState.split("\n");
-  }
-
-  update = updateOuter => {
-    const newState = [];
-    for (let i = 0; i < prevState.length; i++) {
-      let row = "";
-      for (let j = 0; j < prevState[0].length; j++) {
-        row = row + getNewBugState(i, j);
-      }
-      newState.push(row);
-    }
-    return newState;
-  };
-}
-
 function* generateFromArray(array) {
   var index = 0;
   while (index < array.length) {
@@ -649,6 +631,11 @@ function getSmallestIndexThat(array, func, start = 0) {
  } 
 }
 
+function deepCloneNestedArray(obj) {
+  if (!Array.isArray(obj)) return obj;
+  return obj.map((o) => deepCloneNestedArray(o));
+}
+
 module.exports = {
   computeIntcode,
   Robot,
@@ -656,9 +643,9 @@ module.exports = {
   VacumnBot,
   SpringDroid,
   RepairDroid,
-  ErisBugGrid,
   generateFromArray,
   getMinimumSteps,
   getHCF,
   getSmallestIndexThat,
+  deepCloneNestedArray,
 };
