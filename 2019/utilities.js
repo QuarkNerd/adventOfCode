@@ -636,6 +636,20 @@ function deepCloneNestedArray(obj) {
   return obj.map((o) => deepCloneNestedArray(o));
 }
 
+function getIndexToInsertInSortedArray(sortedArray, valueToInsert, itemToValueHash) {
+  // console.log({valueToInsert});
+  let lowerBound = 0
+  let upperBound = sortedArray.length - 1;
+  if (valueToInsert <= itemToValueHash[sortedArray[0]]) return 0;
+  if (valueToInsert >= itemToValueHash[sortedArray[upperBound]]) return upperBound + 1;
+  while (true) {
+    const index = parseInt((lowerBound + upperBound)/2);
+    if (valueToInsert < itemToValueHash[sortedArray[index]]) upperBound = index;
+    else if (valueToInsert > itemToValueHash[sortedArray[index + 1]]) lowerBound = index;
+    else return index + 1;
+  }
+}
+
 module.exports = {
   computeIntcode,
   Robot,
@@ -648,4 +662,5 @@ module.exports = {
   getHCF,
   getSmallestIndexThat,
   deepCloneNestedArray,
+  getIndexToInsertInSortedArray,
 };
