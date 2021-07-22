@@ -1,4 +1,4 @@
-function computeIntcode(intcode, getInput, output) {
+function computeIntcode(intcode, getInput, output, runAutomatically = true) {
   let C = intcode;
   let relativeBase = 0;
   let i = 0;
@@ -6,7 +6,18 @@ function computeIntcode(intcode, getInput, output) {
   let opcode;
   let instruction;
   let parameterModes = { 1: undefined, 2: undefined };
-  while (i < C.length) {
+
+  if (!runAutomatically) return step;
+
+  let cont = true;
+  while (cont) {
+    cont = step();
+  }
+
+  return C;
+
+  function step() {
+    if (i >= C.length) return false;
     instruction = C[i];
     leave = false;
     opcode = instruction % 100;
@@ -86,16 +97,13 @@ function computeIntcode(intcode, getInput, output) {
         leave = true;
         break;
       default:
-        console.log("Default");
+        throw new Error("invalid code");
     }
-    if (leave) {
-      break;
-    }
+    return !leave
   }
-  return C;
 }
 
-// these 3 classes can probably inherit some grid functionality and drawing functionality
+// Some of these classes can probably inherit some grid functionality and drawing functionality
 class Robot {
   constructor(startValue) {
     this.colourHash = {};
@@ -230,9 +238,17 @@ class VacumnBot {
   constructor() {
     this.currentLine = [];
     this.grid = [this.currentLine];
+    this.nodeConnections = [];
   }
 
-  setGridTile = input => {
+  UP = { x: 0, y: -1 };
+  RIGHT = { x: 1, y: 0 };
+  DOWN = { x: 0, y: 1 };
+  LEFT = { x: -1, y: 0 };
+
+  DIRECTIONS = [this.UP, this.RIGHT, this.DOWN, this.LEFT];
+
+  setGridTile = (input) => {
     const char = String.fromCharCode(input);
     if (char === "\n") {
       this.currentLine = [];
@@ -246,22 +262,109 @@ class VacumnBot {
     console.log(this.grid.join("\n").replace(/,/g, ""));
   };
 
-  getNodeConnections = () => {
+  getPath = () => {
+    this.parseGrid();
+    const positionArray = this.robotStart.split(",");
+    const currentPos = { x: parseInt(positionArray[0]), y: parseInt(positionArray[1]) };
+    const arrow = this.grid[currentPos.y][currentPos.x];
+    let currentDirectionIndex;
+
+    switch (arrow) {
+      case "^":
+        currentDirectionIndex = 0;
+        break;
+      case ">":
+        currentDirectionIndex = 1;
+        break;
+      case "v":
+        currentDirectionIndex = 2;
+        break;
+      case "<":
+        currentDirectionIndex = 3;
+        break;
+      default:
+        throw new Error("Bad robot code", arrow);
+    }
+
+    const path = [];
+    let pathEnded = false;
+
+    const backwardsIndex = (currentDirectionIndex + 2) % 4;
+
+    // This check should only be done once, because we should never
+    // turn backwards later
+    if (
+      this.isScaffold(
+        currentPos.x + this.DIRECTIONS[backwardsIndex].x,
+        currentPos.y + this.DIRECTIONS[backwardsIndex].y
+      )
+    ) {
+      currentDirectionIndex = backwardsIndex;
+      path.push("R");
+      path.push("R");
+    }
+
+    while (!pathEnded) {
+      let steps = 0;
+
+      while (
+        this.isScaffold(
+          currentPos.x + this.DIRECTIONS[currentDirectionIndex].x,
+          currentPos.y + this.DIRECTIONS[currentDirectionIndex].y
+        )
+      ) {
+        steps += 1;
+        (currentPos.x =
+          currentPos.x + this.DIRECTIONS[currentDirectionIndex].x),
+          (currentPos.y =
+            currentPos.y + this.DIRECTIONS[currentDirectionIndex].y);
+      }
+
+      if (steps > 0) path.push(steps);
+
+      const relRight = (currentDirectionIndex + 1) % 4; // relativeRight
+      const relLeft = (currentDirectionIndex + 3) % 4;
+      if (
+        this.isScaffold(
+          currentPos.x + this.DIRECTIONS[relRight].x,
+          currentPos.y + this.DIRECTIONS[relRight].y
+        )
+      ) {
+        currentDirectionIndex = relRight;
+        path.push("R");
+      } else if (
+        this.isScaffold(
+          currentPos.x + this.DIRECTIONS[relLeft].x,
+          currentPos.y + this.DIRECTIONS[relLeft].y
+        )
+      ) {
+        currentDirectionIndex = relLeft;
+        path.push("L");
+      } else {
+        pathEnded = true;
+      }
+    }
+  
+    return path;
+  };
+
+  parseGrid = () => {
     const height = this.grid.length;
     const width = this.grid[0].length;
 
     let nodeConnections = {};
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
-        if (this.isScaffold([{ x, y }])) {
+        if (this.isScaffold(x, y)) {
+          // refaactor to use up down left right
           const possibleConnections = [
             { x: x + 1, y },
             { x: x - 1, y },
             { x, y: y - 1 },
-            { x, y: y + 1 }
+            { x, y: y + 1 },
           ];
-          const actualConnections = possibleConnections.filter(coor =>
-            this.isScaffold([coor])
+          const actualConnections = possibleConnections.filter((coor) =>
+            this.isScaffold(coor.x, coor.y)
           );
           nodeConnections[`${x},${y}`] = actualConnections.map(
             ({ x, y }) => `${x},${y}`
@@ -271,13 +374,13 @@ class VacumnBot {
         }
       }
     }
-    return nodeConnections;
+    this.nodeConnections = nodeConnections;
   };
 
   getSumAllignParam = () => {
-    const nodeConnections = this.getNodeConnections();
+    this.parseGrid();
     let sum = 0;
-    Object.entries(nodeConnections).forEach(([coor, connections]) => {
+    Object.entries(this.nodeConnections).forEach(([coor, connections]) => {
       if (connections.length === 4) {
         const [x, y] = coor.split(",");
         sum += x * y;
@@ -286,12 +389,13 @@ class VacumnBot {
     return sum;
   };
 
-  isScaffold = coors => {
+  isScaffold = (x, y) => {
     const grid = this.grid;
     const isBotFunc = this.isBot;
-    return coors.every(function({ x, y }) {
-      return x >= 0 && y >= 0 && (grid[y][x] === "#" || isBotFunc(x, y));
-    });
+    return x >= 0 && y >= 0 && 
+      x <= this.grid[0].length && 
+      y <= this.grid.length && 
+      (grid[y][x] === "#" || isBotFunc(x, y));
   };
 
   isBot = (x, y) => {
@@ -420,24 +524,6 @@ class RepairDroid {
   }
 }
 
-class ErisBugGrid {
-  constructor(intialState) {
-    this.state = intialState.split("\n");
-  }
-
-  update = updateOuter => {
-    const newState = [];
-    for (let i = 0; i < prevState.length; i++) {
-      let row = "";
-      for (let j = 0; j < prevState[0].length; j++) {
-        row = row + getNewBugState(i, j);
-      }
-      newState.push(row);
-    }
-    return newState;
-  };
-}
-
 function* generateFromArray(array) {
   var index = 0;
   while (index < array.length) {
@@ -539,6 +625,31 @@ function getHCF2Numbers(a, b) {
   return currentHighest;
 }
 
+function getSmallestIndexThat(array, func, start = 0) {
+ for (let i = start; i < array.length; i++) {
+   if (func(array[i])) return i;
+ } 
+}
+
+function deepCloneNestedArray(obj) {
+  if (!Array.isArray(obj)) return obj;
+  return obj.map((o) => deepCloneNestedArray(o));
+}
+
+function getIndexToInsertInSortedArray(sortedArray, valueToInsert, itemToValueHash) {
+  // console.log({valueToInsert});
+  let lowerBound = 0
+  let upperBound = sortedArray.length - 1;
+  if (valueToInsert <= itemToValueHash[sortedArray[0]]) return 0;
+  if (valueToInsert >= itemToValueHash[sortedArray[upperBound]]) return upperBound + 1;
+  while (true) {
+    const index = parseInt((lowerBound + upperBound)/2);
+    if (valueToInsert < itemToValueHash[sortedArray[index]]) upperBound = index;
+    else if (valueToInsert > itemToValueHash[sortedArray[index + 1]]) lowerBound = index;
+    else return index + 1;
+  }
+}
+
 module.exports = {
   computeIntcode,
   Robot,
@@ -546,8 +657,10 @@ module.exports = {
   VacumnBot,
   SpringDroid,
   RepairDroid,
-  ErisBugGrid,
   generateFromArray,
   getMinimumSteps,
-  getHCF
+  getHCF,
+  getSmallestIndexThat,
+  deepCloneNestedArray,
+  getIndexToInsertInSortedArray,
 };
