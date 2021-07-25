@@ -604,15 +604,7 @@ function getMinimumSteps(connectedNodes, startPosition, endPosition = null) {
   return { success: !searching || !endPosition, steps: steps - 1 };
 }
 
-function getHCF(numbers) {
-  let a = numbers[0];
-  for (var i = 1; i < numbers.length; i++) {
-    b = numbers[i];
-    a = getHCF2Numbers(a, b);
-  }
-  return a;
-}
-function getHCF2Numbers(a, b) {
+function getHCF(a, b) {
   a = Math.abs(a);
   b = Math.abs(b);
   const limit = Math.min(a, b);

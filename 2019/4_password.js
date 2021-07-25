@@ -1,11 +1,15 @@
+const INPUT = "278384-824795".split("-");
+const NUMBER_A = parseInt(INPUT[0]);
+const NUMBER_B = parseInt(INPUT[1]);
+
 solvePartOne();
 solvePartTwo();
 
 function solvePartOne() {
   console.log(
     countNumbers(
-      123257,
-      647015,
+      NUMBER_A,
+      NUMBER_B,
       number => hasAPair(number) && neverDecreases(number)
     )
   );
@@ -14,8 +18,8 @@ function solvePartOne() {
 function solvePartTwo() {
   console.log(
     countNumbers(
-      123257,
-      647015,
+      NUMBER_A,
+      NUMBER_B,
       number => hasALonePair(number) && neverDecreases(number)
     )
   );

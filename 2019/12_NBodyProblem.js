@@ -1,4 +1,5 @@
 const utilities = require("./utilities");
+
 solvePartOne();
 solvePartTwo();
 
@@ -70,9 +71,9 @@ function updateVelocityOfPair(moon1, moon2, dim) {
 }
 
 function getLCM(numbers) {
-  const multi = numbers.reduce((a, b) => a * b);
-  const HCF = utilities.getHCF(numbers);
-  return multi / Math.pow(HCF, numbers.length - 1);
+  let nums = [...numbers];
+  if (nums.length > 2) return getLCM([nums.pop(), getLCM(nums)]);
+  return nums[0] * nums[1] / utilities.getHCF(nums[0], nums[1]);
 }
 
 function convertStateToString(state) {
@@ -80,10 +81,10 @@ function convertStateToString(state) {
 }
 
 function getStartingState() {
-  const input = `<x=7, y=10, z=17>
-  <x=-2, y=7, z=0>
-  <x=12, y=5, z=12>
-  <x=5, y=-8, z=6>`;
+  const input = `<x=-10, y=-10, z=-13>
+<x=5, y=5, z=-9>
+<x=3, y=8, z=-16>
+<x=1, y=3, z=-3>`;
   return input
     .replace(/ /g, "")
     .replace(/=/g, "")

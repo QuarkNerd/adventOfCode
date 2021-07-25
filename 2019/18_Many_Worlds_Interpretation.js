@@ -10,7 +10,7 @@ const input = getInput();
 console.time();
 solvePartOne();
 console.timeEnd();
-solvePartTwo();
+//solvePartTwo();
 
 function solvePartOne() {
   const [connectedPositionsHash, doors, keys] = parseMap(input);

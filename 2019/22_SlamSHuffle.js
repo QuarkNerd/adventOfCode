@@ -109,116 +109,104 @@ function getInstructionDetails(instruction) {
 }
 
 function getInput() {
-  return `cut -8737
-  deal with increment 36
-  deal into new stack
-  deal with increment 32
-  cut -3856
-  deal with increment 27
-  deal into new stack
-  cut 8319
-  deal with increment 15
-  deal into new stack
-  deal with increment 53
-  cut 2157
-  deal with increment 3
-  deal into new stack
-  cut 9112
-  deal with increment 59
-  cut 957
-  deal with increment 28
-  cut -9423
-  deal with increment 51
-  deal into new stack
-  deal with increment 8
-  cut 3168
-  deal with increment 16
-  cut 6558
-  deal with increment 32
-  deal into new stack
-  cut -8246
-  deal with increment 40
-  cut 4405
-  deal with increment 9
-  cut -2225
-  deal with increment 36
-  cut -5080
-  deal with increment 59
-  cut -648
-  deal with increment 64
-  cut -1845
-  deal into new stack
-  cut -7726
-  deal with increment 44
-  cut 1015
-  deal with increment 12
-  cut 960
-  deal with increment 30
-  deal into new stack
-  deal with increment 65
-  deal into new stack
-  deal with increment 27
-  cut 6877
-  deal with increment 5
-  deal into new stack
-  cut -3436
-  deal with increment 63
-  deal into new stack
-  deal with increment 71
-  deal into new stack
-  deal with increment 7
-  cut -9203
-  deal with increment 38
-  cut 9008
-  deal with increment 59
-  deal into new stack
-  deal with increment 13
-  cut 5979
-  deal with increment 55
-  cut 9483
-  deal with increment 65
-  cut -9250
-  deal with increment 75
-  deal into new stack
-  cut -1830
-  deal with increment 55
-  deal into new stack
-  deal with increment 67
-  cut -8044
-  deal into new stack
-  cut 8271
-  deal with increment 51
-  cut 6002
-  deal into new stack
-  deal with increment 47
-  cut 3638
-  deal with increment 18
-  cut -785
-  deal with increment 63
-  cut -2460
-  deal with increment 25
-  cut 5339
-  deal with increment 61
-  cut -5777
-  deal with increment 54
-  deal into new stack
-  cut 8075
-  deal into new stack
-  deal with increment 22
-  cut 3443
-  deal with increment 34
-  cut 5193
-  deal with increment 3`.split("\n");
+  return `deal into new stack
+deal with increment 21
+cut -1639
+deal with increment 32
+cut -873
+deal with increment 8
+deal into new stack
+cut -7730
+deal with increment 8
+cut -8408
+deal with increment 42
+cut -4951
+deal into new stack
+deal with increment 24
+cut -6185
+deal with increment 69
+cut -930
+deal into new stack
+cut 8675
+deal with increment 47
+cut -4543
+deal with increment 62
+deal into new stack
+deal with increment 23
+cut 7128
+deal with increment 29
+deal into new stack
+deal with increment 65
+cut 8232
+deal with increment 34
+deal into new stack
+deal with increment 7
+deal into new stack
+cut -5590
+deal with increment 34
+cut -3523
+deal with increment 24
+cut 8446
+deal with increment 42
+cut 6714
+deal into new stack
+deal with increment 60
+cut 1977
+deal with increment 51
+cut 2719
+deal with increment 45
+cut 9563
+deal with increment 33
+cut 9036
+deal with increment 70
+cut 3372
+deal with increment 60
+cut 9686
+deal with increment 7
+cut 9344
+deal with increment 13
+cut 797
+deal with increment 12
+cut -6989
+deal with increment 43
+deal into new stack
+cut 1031
+deal with increment 14
+cut -1145
+deal with increment 26
+cut -9008
+deal with increment 14
+cut 432
+deal with increment 46
+cut -65
+deal with increment 50
+cut -704
+deal with increment 4
+cut 7372
+deal with increment 66
+cut 690
+deal with increment 60
+cut -7137
+deal with increment 66
+cut 9776
+deal with increment 30
+cut 3532
+deal with increment 62
+cut 4768
+deal with increment 13
+deal into new stack
+cut -9014
+deal with increment 68
+cut -9601
+deal with increment 6
+cut -7535
+deal with increment 74
+cut 9479
+deal with increment 6
+cut -1879
+deal with increment 33
+cut 3675
+deal with increment 19
+cut -937
+deal with increment 42`.split("\n");
 }
-
-// size = 10;
-// console.log(new Array(10).fill(undefined).map((_, i) => dealWithIncN(i, 3)));
-
-// function dealWithIncN(index, N) {
-//   let size = 10;
-//   let num = index;
-//   while (num % N !== 0) {
-//     num += size;
-//   }
-//   return parseInt(num / N);
-// }

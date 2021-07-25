@@ -77,85 +77,63 @@ function getOreQuantityRequired(
 }
 
 function getInput() {
-  return `8 SPJN, 2 LJRB, 1 QMDTJ => 1 TFPRF
-111 ORE => 5 GCFP
-5 NGCKP => 6 QXQZ
-21 RGRLZ => 7 DKVN
-2 DCKF => 9 FCMVJ
-7 SGHSV, 4 LZPCS => 9 DQRCZ
-4 QNRH => 8 WGKHJ
-135 ORE => 6 BPLFB
-4 SPJN, 1 DCKF, 9 KJVZ, 1 DKVN, 4 ZKVPL, 11 TFPRF, 1 CWPVT => 8 BVMK
-8 TGPV, 4 MQPLD => 2 SPFZ
-11 QMDTJ, 15 LVPK, 5 LZPCS => 3 KJVZ
-2 RNXF, 3 MKMQ => 6 LJRB
-11 RKCXJ, 4 BJHW, 2 DKDST => 3 QNRH
-3 NZHP, 1 QMDTJ => 9 BCMKN
-10 DQRCZ, 1 GBJF => 7 RGRLZ
-2 WLKC, 1 GBJF, 7 SPJN => 5 GBWQT
-4 TGPV, 1 LTSB => 2 LZPCS
-6 LJRB => 4 LQHB
-3 LZPCS, 3 MDTZL, 12 DLHS => 2 CBTK
-1 TGPV, 1 CQPR => 9 XQZFV
-26 FSQBL => 8 HQPG
-9 LQHB => 1 GBJF
-7 NGCKP => 5 WLKC
-9 DKDST, 1 XQZFV => 9 TPZBM
-144 ORE => 9 RNXF
-1 LJRB => 6 CQPR
-9 MKMQ, 12 RNXF => 9 JWPLZ
-5 LZPCS, 28 QMDTJ, 1 QNRH => 5 LVPK
-5 TGPV, 1 HQPG => 6 FCBLK
-8 LVPK, 9 DQRCZ, 1 MDTZL => 6 DCKF
-1 RKCXJ, 2 LZPCS, 13 LJNJ => 1 QWFG
-4 DKDST, 1 XQZFV, 10 NSXFK => 4 JRDXQ
-7 QWFG, 1 BVMK, 4 BJHW, 21 QNSWJ, 3 FBTW, 3 FCBLK, 59 SPFZ, 4 GBWQT => 1 FUEL
-28 LZPCS, 17 NGCKP, 1 MQPLD => 5 MDTZL
-1 FCBLK, 5 WGKHJ => 7 ZKVPL
-7 LJNJ => 9 BLDJP
-11 FSQBL, 2 BCMKN, 1 CBTK => 9 CWPVT
-1 BJHW => 1 MQPLD
-11 SGHSV, 3 LJNJ => 1 NGCKP
-2 FSQBL, 7 FCBLK, 1 CQPR => 4 RKCXJ
-1 JRDXQ => 4 SGHSV
-107 ORE => 6 MKMQ
-1 DQRCZ, 3 QMDTJ, 9 XQZFV => 4 FZVH
-6 NSXFK, 1 MKMQ => 6 DLHS
-4 CQPR, 1 RNXF, 1 HQPG => 5 DKDST
-9 RNXF => 8 LTZTR
-1 LTSB, 8 BLDJP => 4 SPJN
-1 FCBLK => 4 LJNJ
-1 NGCKP => 3 NZHP
-11 LZPCS, 22 DQRCZ, 1 QWFG, 1 QXQZ, 6 DKVN, 16 FZVH, 3 MQPLD, 23 HQPG => 3 QNSWJ
-26 DLHS, 1 NSXFK => 9 BJHW
-3 FCBLK, 10 HQPG => 3 LTSB
-10 LTZTR, 13 JWPLZ, 16 FSQBL => 4 TGPV
-11 LTSB, 1 XQZFV, 3 DQRCZ => 4 CZCJ
-1 HQPG, 12 XQZFV, 17 TPZBM => 6 QMDTJ
-2 LTZTR => 7 FSQBL
-1 GCFP, 5 BPLFB => 1 NSXFK
-3 KJVZ, 1 QXQZ, 6 DKDST, 1 FCMVJ, 2 CZCJ, 1 QNRH, 7 WLKC => 4 FBTW`;
+  return `9 RJLWC, 9 RJCH => 9 QWFH
+1 XZVHQ, 9 SPQR, 2 WKGVW => 5 KPZB
+12 HPRPM, 4 GTZCK => 7 DJNDX
+7 JKRV, 3 FKTLR, 19 FDSBZ => 9 HPRPM
+9 VTCRJ => 4 SPSW
+2 FDSBZ, 1 FKTLR => 6 KBJF
+9 SPSW => 9 QHVSJ
+5 TFPNF, 11 MNMBX, 1 QCMJ, 13 TXPL, 1 DJNDX, 9 XZVHQ, 2 WKGVW, 2 VQPX => 8 GPKR
+10 DWTC, 8 DSPJG => 4 QCMJ
+100 ORE => 9 XZDP
+3 DBRBD => 4 DKRX
+37 JKRV, 5 FKTLR => 7 VXZN
+3 HWDS, 2 ZRBN => 8 XZVHQ
+15 QNXZV, 53 VXZN, 3 LJQH, 13 FKXVQ, 6 DZGN, 17 MNMBX, 16 GPKR, 8 HWJVK => 1 FUEL
+8 GSLWP => 7 PWTFL
+4 HVPWG => 9 JKRV
+5 NVWGS, 1 QWFH, 9 CWZRS => 2 XPMV
+6 ZRBN => 4 JZDB
+36 BWXWC, 14 HKFD => 3 FMNK
+3 FMNK, 2 SPSW, 16 WKGVW => 6 VQPX
+1 DWTC => 9 VMHM
+3 HPRPM, 1 DWTC => 5 TXPL
+1 KBJF, 2 ZSKSW => 1 MNMBX
+5 JZDB => 4 FDSBZ
+2 FKXVQ => 9 ZTFZG
+17 XZDP => 2 HKFD
+7 VMHM => 3 FGQF
+1 JKRV => 8 CWZRS
+1 WKGVW, 2 SPSW => 6 VLQP
+3 ZRBN => 3 ZSKSW
+7 VXZN, 7 TGLHX => 5 NVWGS
+10 VLQP, 18 FGQF => 4 DBRBD
+8 VMHM => 8 SPQR
+1 KPZB, 4 GQGB, 3 WKGVW => 1 FDSZX
+2 VXZN => 8 VTCRJ
+3 RJLWC => 2 GQGB
+6 TXPL => 4 DSPJG
+2 ZTFZG => 8 TJLW
+1 MPSPS => 3 BWXWC
+5 FMNK, 4 ZSKSW => 5 RWKWD
+137 ORE => 3 MPSPS
+1 VTCRJ, 8 QWFH => 2 GKVQK
+8 RJLWC => 8 TFPNF
+7 TJLW, 1 TFPNF, 16 VQPX, 4 DBRBD, 4 GTZCK, 5 XPMV, 1 FDSZX => 6 DZGN
+1 HVPWG => 7 RJLWC
+18 HVPWG, 9 BWXWC => 4 GSLWP
+107 ORE => 8 RJCH
+1 RJCH => 2 ZRBN
+2 GSLWP, 18 RWKWD, 1 QWFH => 5 LJQH
+3 VXZN, 1 FMNK => 4 TGLHX
+3 HKFD, 6 FMNK => 3 FKTLR
+3 MPSPS => 4 HVPWG
+27 PWTFL, 15 ZTFZG, 6 QHVSJ, 14 DJNDX, 9 RWKWD, 2 MNMBX, 4 DKRX => 6 QNXZV
+1 ZSKSW, 9 KBJF => 3 FKXVQ
+2 FDSBZ => 4 DWTC
+3 HPRPM => 5 HWDS
+1 GKVQK, 1 PWTFL => 5 GTZCK
+1 FGQF => 5 WKGVW
+5 FDSBZ, 7 SPSW => 6 HWJVK`;
 }
-
-// Broken, not sure why
-// function solvePartTwo() {
-//   const totalOre = Math.pow(10, 12);
-//   const spareQuantity = {};
-//   const oreForOneFuel = getOreQuantityRequired("FUEL", 1, spareQuantity);
-//   let fuelMade = Math.floor(totalOre / oreForOneFuel);
-//   let oreLeft = totalOre - fuelMade * oreForOneFuel;
-//   // There has to be a nicer way to do this?
-//   const totalSpareQuantity = {};
-//   Object.keys(spareQuantity).forEach(ingredient => {
-//     totalSpareQuantity[ingredient] = spareQuantity[ingredient] * fuelMade;
-//   });
-//   let oreNeeded = 0;
-//   while (true) {
-//     oreNeeded = getOreQuantityRequired("FUEL", 1, totalSpareQuantity);
-//     if (oreLeft >= oreNeeded) {
-//       oreLeft -= oreNeeded;
-//       fuelMade++;
-//     } else break;
-//   }
-//   console.log(fuelMade);
-// }
