@@ -17,7 +17,6 @@ fn part_one(list: &Vec<u16>) -> u64 {
     let mut epsilon_rate = 0;
 
     let half_vol = (list.len()/2) as u16;
-    println!("{:?}", counts);
     for i in 0..counts.len() {
         if counts[i] > half_vol {
             gamma_rate += 1 << i;

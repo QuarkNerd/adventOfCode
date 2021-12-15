@@ -17,7 +17,7 @@ fn count_increases<T: PartialOrd>(list: &Vec<T>, step: usize) -> usize {
 }
 
 fn get_list() ->  Vec<u16>  {
-    INPUT.split("\n").map(|x| x.parse::<u16>().unwrap()).collect()
+    INPUT.lines().map(|x| x.parse::<u16>().unwrap()).collect()
 }
 
 static INPUT: &str =

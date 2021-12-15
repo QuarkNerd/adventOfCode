@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 fn main() {
-    let mut input = include_str!("include").split("\r\n\r\n");
+    let mut input = include_str!("input").split("\r\n\r\n");
 
     let start= input.next().unwrap();
 

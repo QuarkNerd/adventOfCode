@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 
 fn main() {
-    let map: HashMap<(i16, i16), usize> = include_str!("include").lines().enumerate().flat_map(|(i, x)| {
+    let map: HashMap<(i16, i16), usize> = include_str!("input").lines().enumerate().flat_map(|(i, x)| {
         x.split("").filter(|x| !x.is_empty()).map(str::parse).enumerate().map(|(j, d)| ((i as i16, j as i16),d.unwrap())).collect::<Vec<_>>()
     }).collect();
 
