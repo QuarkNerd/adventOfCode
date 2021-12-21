@@ -53,6 +53,5 @@ fn get_possible_velocities(x_start: i64, x_end: i64, y_start: i64, y_end: i64) -
 
     let y_lim = max(y_start.abs(), y_end.abs());
 
-    // why is move needed? WHy does it not just copy?
     (x_min..=x_max).map(move |x| (-y_lim..=y_lim).map(|y| (x,y)).collect::<Vec<_>>()).flatten()
 }
