@@ -40,8 +40,6 @@ fn parse_next_packet(inp: String) -> (Box<dyn Packet>, String) {
         _ => panic!("Invalid bit")
     };
 
-    let inner_packets = inner_packets.into_iter().collect();
-
     let operation = match header.type_id  {
         0 => Operation::Sum,
         1 => Operation::Product,
