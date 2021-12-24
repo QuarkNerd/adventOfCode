@@ -1,4 +1,4 @@
-use std::cmp::{min, max};
+use std::{cmp::{min, max}, ops::{Deref, DerefMut}};
 
 extern crate pathfinding;
 use pathfinding::prelude::dijkstra;
@@ -8,14 +8,12 @@ fn main() {
     let neighbours = |n: &Node| {
         let mut neigh = vec![];
 
-        let default_depth = if n.1.is_none() {3} else {5};
+        let default_depth = (n.len()/4) + 1;
         let mut incorrect_amphipods_in_room = [false; 9];
         let mut shallowest_amphipod_per_room = [default_depth;10];
         let mut hallway_amphipods = [false; 11];
 
-        let all_amphipods = get_vec_from_node(n);
-
-        for amphipod in all_amphipods.iter() {
+        for amphipod in n.iter() {
             match amphipod.state {
                State::Initial(room, depth) => {
                    incorrect_amphipods_in_room[room] = true;
@@ -26,7 +24,7 @@ fn main() {
             }
         }
 
-        for (i, current) in all_amphipods.iter().enumerate() {
+        for (i, current) in n.iter().enumerate() {
             match current.state {
                 State::Final(_) => { continue; },
                 State::Hallway(x) => {
@@ -37,12 +35,12 @@ fn main() {
                     
                     let depth = shallowest_amphipod_per_room[current.target_room] - 1;
 
-                    let mut new_node = all_amphipods.clone();
+                    let mut new_node = n.clone();
                     new_node[i] = Amphipod {
                         state: State::Final(depth),
                         ..*current
                     };
-                    neigh.push((get_node_from_vec(new_node), ((x as i64 - current.target_room as i64).abs() as usize + depth)*current.movement_cost ));
+                    neigh.push((new_node, ((x as i64 - current.target_room as i64).abs() as usize + depth)*current.movement_cost ));
                 },
                 State::Initial(room, depth) => {
                     // println!("{}", x);
@@ -64,9 +62,9 @@ fn main() {
                             state: State::Hallway(f),
                             ..*current
                         };
-                        let mut new_node = all_amphipods.clone();
+                        let mut new_node = n.clone();
                         new_node[i] = new_amphipod;
-                        neigh.push((get_node_from_vec(new_node), ((f as i64 - room as i64).abs() as usize + depth)*current.movement_cost));
+                        neigh.push((new_node, ((f as i64 - room as i64).abs() as usize + depth)*current.movement_cost));
                     });
                 }
             }
@@ -76,8 +74,7 @@ fn main() {
     };
 
     let success = |n: &Node| {
-        let all_amphipods = get_vec_from_node(n);
-        all_amphipods.into_iter().all(|amphipod| {
+        n.iter().all(|amphipod| {
             amphipod.state.is_final()
         })
     };
@@ -87,8 +84,22 @@ fn main() {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct Node([Amphipod; 8], Option<[Amphipod; 8]>);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct Node(Vec<Amphipod>);
+
+impl Deref for Node {
+    type Target = Vec<Amphipod>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for Node {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct Amphipod {
@@ -116,7 +127,7 @@ impl State {
 
 fn get_starting_node() -> Node {
     let mut amphipods = vec![];
-    let mut rows: Vec<_> = include_str!("input").lines().skip(2).take(2).collect();
+    let rows: Vec<_> = include_str!("input").lines().skip(2).take(2).collect();
 
     // comment in for part two
     // rows.insert(1, "  #D#C#B#A#  ");
@@ -133,7 +144,7 @@ fn get_starting_node() -> Node {
         };
     }
 
-    get_node_from_vec(amphipods)
+    Node(amphipods)
 }
 
 fn get_amphipod(variant: &str, pos: usize, can_be_final: bool, depth: usize) -> Amphipod {
@@ -156,40 +167,4 @@ fn get_amphipod(variant: &str, pos: usize, can_be_final: bool, depth: usize) -> 
         movement_cost,
         target_room
     }
-}
-
-fn get_node_from_vec(v: Vec<Amphipod>) -> Node {
-    let mut n = Node([
-        v[0],
-        v[1],
-        v[2],
-        v[3],
-        v[4],
-        v[5],
-        v[6],
-        v[7]
-    ], None);
-
-    if v.len() == 16 {
-        n.1 = Some([
-            v[8],
-            v[9],
-            v[10],
-            v[11],
-            v[12],
-            v[13],
-            v[14],
-            v[15]
-        ]);
-    };
-
-    n
-}
-
-fn get_vec_from_node(n: &Node) -> Vec<Amphipod> {
-    let mut all_amphipods: Vec<_> = n.0.iter().map(|x| *x).collect();
-    if let Some(rest) = n.1 {
-        rest.iter().for_each(|x| all_amphipods.push(*x));
-    }
-    all_amphipods
 }
