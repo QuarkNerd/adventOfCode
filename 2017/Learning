@@ -1,0 +1,11 @@
+Use $PSScriptRoot because script run from where they are called, not drect
+-lt parameters
+foreach
+pipng
+returns and out-nulls
+writing to output
+why .join and -split
+
+# Why New-Object System.Collections.Generic.Dictionary"[String,Int]";
+# Not New-Object System.Collections.Generic.Dictionary[String,Int];
+
