@@ -12,3 +12,5 @@ Cargo.lock
 
 bin/
 obj/
+
+**/node_modules
