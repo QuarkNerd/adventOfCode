@@ -19,9 +19,9 @@ for line in lines:
     else:
         happiness_pairs[pair] += change
 
-print(visitAllNodes.getWeight(happiness_pairs)[1])
+print(visitAllNodes.getWeight(happiness_pairs, True)[1])
 
 for p in people:
     happiness_pairs[frozenset(["ME", p])] = 0
 
-print(visitAllNodes.getWeight(happiness_pairs)[1])
+print(visitAllNodes.getWeight(happiness_pairs, True)[1])
