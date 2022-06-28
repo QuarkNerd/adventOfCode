@@ -20,26 +20,24 @@ swaps = input_splt[:-2]
 inital_string = input_splt[-1]
 
 possible_final_strings = set()
-
+reverse_swaps = {}
 for sw in swaps:
     inp, final = sw.split(" => ")
+    reverse_swaps[final] = inp
     possible_final_strings.update(replace_all_seperately(inital_string, inp, final))
 
 print(len(possible_final_strings))
 
-i = 0
-bbb = set("e")
-while True:
-    i +=  1
-    print(i)
-    print(len(bbb))
+seeds = sorted(reverse_swaps.keys(), key=len)
+seeds.reverse()
 
-    new_bbb = set()
-    for x in bbb: 
-        for sw in swaps:
-            inp, final = sw.split(" => ")
-            new_bbb.update(replace_all_seperately(x, inp, final))
-    bbb = new_bbb
+def stepsToE(initial, st = 0):
+    if (initial == 'e'):
+        raise Exception(st) 
+    if (len(initial) == 1):
+        return
+    for s in seeds:
+        for newString in replace_all_seperately(initial, s, reverse_swaps[s]):
+            stepsToE(newString, st + 1)
 
-    if inital_string in bbb:
-        break
+stepsToE(inital_string)
