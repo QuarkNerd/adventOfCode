@@ -1,6 +1,7 @@
 import enum
 import copy
-import json
+import time
+start = time.time()
 
 class Action(enum.Enum):
     Magic_Missile = "Magic_Missile"
@@ -13,10 +14,6 @@ class State:
     def __init__(self, wizard, boss):
         self.wizard = wizard
         self.boss = boss
-    
-    def print(self):
-        print('wizard: ' + self.wizard.string())
-        print('boss: ' + json.dumps(self.boss.__dict__))
 
 class Wizard:
     def __init__(self, hp, mana):
@@ -28,18 +25,6 @@ class Wizard:
             Action.Poison: 0,
             Action.Recharge: 0
         }
-    
-    def string(self):
-        return json.dumps({
-            'hp': self.hp,
-            'mana': self.mana,
-            'mana_spent': self.mana_spent,
-            'timers': {
-                'shield': self.timers[Action.Shield],
-                'poison': self.timers[Action.Poison],
-                'recharge': self.timers[Action.Recharge],
-            }
-        })
 
 class Boss:
     def __init__(self, hp, damage):
@@ -47,10 +32,10 @@ class Boss:
         self.damage = damage
 
 COSTS = {
+    Action.Poison: 173,
+    Action.Shield: 113,
     Action.Magic_Missile: 53,
     Action.Drain: 73,
-    Action.Shield: 113,
-    Action.Poison: 173,
     Action.Recharge: 229
 }
 
@@ -105,57 +90,40 @@ def get_possible_states_after_wizard_action(state):
     states = [get_state_after_wizard_action(state, action) for action in (Action)]
     return [*filter(lambda st: st != None, states)]
 
-    # Magic_Missile Missile costs 53 mana. It instantly does 4 damage.
-    # Drain costs 73 mana. It instantly does 2 damage and heals you for 2 hit points.
-    # Shield costs 113 mana. It starts an effect that lasts for 6 turns. While it is active, your armor is increased by 7.
-    # Poison costs 173 mana. It starts an effect that lasts for 6 turns. At the start of each turn while it is active, it deals the boss 3 damage.
-    # Recharge costs 229 mana. It starts an effect that lasts for 5 turns. At the start of each turn while it is active, it gives you 101 new mana.
-
 input = open("input/22", "r").read().strip().splitlines()
 boss = Boss(int(input[0].split(' ')[-1]), int(input[1].split(' ')[-1]))
 wizard = Wizard(50, 500)
 initial_state = State(wizard, boss)
 
 lowest_mana = 1000000
-list_of_states = [initial_state]
 
-while len(list_of_states) > 0:
-    # print(lowest_mana, json.dumps(list_of_states))
-    # print(len(list_of_states))
-    # [*map(lambda st: st.print(), list_of_states)]
-    new_states = []
-    for state in list_of_states:
-        apply_effects(state)
-        # state.print()
-        if (state.boss.hp < 0):
-            if (state.wizard.mana_spent < lowest_mana):
-                lowest_mana = state.wizard.mana_spent
-            break
-        next_states = get_possible_states_after_wizard_action(state)
-        # print("aaaaaaaaaaaaaaa")
-        # [*map(lambda st: st.print(), next_states)]
-        [*map(apply_effects, next_states)]
-        # print("bbbbbbbbbbbbbbbbbb")
-        # [*map(lambda st: st.print(), next_states)]
-        # print("afasdfdasf")
-        (ended, next_states) = split(next_states, lambda st: st.boss.hp < 0)
-        # print("qqqqqqqqqqqqqqq")
-        # [*map(lambda st: st.print(), next_states)]
-        for st in ended:
-            if (state.wizard.mana_spent < lowest_mana):
-                lowest_mana = state.wizard.mana_spent
-        [*map(apply_boss_action, next_states)]
-        new_states.append(next_states)
-        # print("jlsdfjsdlfjsadlfjsalfjsdlf")
-        # [*map(lambda st: st.print(), next_states)]
+def do_all_paths(state):
+    global lowest_mana
 
-    # print(new_states)
-    new_states = [x for l in new_states for x in l]
-    # print(new_states)
-    list_of_states = [*filter(lambda st: st.wizard.mana_spent < lowest_mana and st.wizard.hp > 0, new_states)]
-    # break
-    
-print(lowest_mana)
+    ## Part two only
+    state.wizard.hp -=1
+    if state.wizard.hp <=0:
+        return
+    ## Part two only
 
-# Hit Points: 58
-# Damage: 9
+    apply_effects(state)
+    if (state.boss.hp <= 0):
+        if (state.wizard.mana_spent < lowest_mana):
+            lowest_mana = state.wizard.mana_spent
+            print(lowest_mana)
+        return
+    next_states =  get_possible_states_after_wizard_action(state)
+    next_states = [*filter(lambda st: st.wizard.mana_spent < lowest_mana, next_states)]
+    [*map(apply_effects, next_states)]
+    for st in next_states:
+        if (st.boss.hp <= 0):
+            lowest_mana = st.wizard.mana_spent
+            print(lowest_mana)
+            return
+    [*map(apply_boss_action, next_states)]
+    next_states = [*filter(lambda st: st.wizard.hp > 0 and st.wizard.mana_spent + 173 * (st.boss.hp-15)//18 < lowest_mana, next_states)]
+    [*map(do_all_paths, next_states)]
+
+do_all_paths(initial_state)
+
+print(time.time() - start)
