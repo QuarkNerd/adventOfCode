@@ -12,7 +12,3 @@ Cargo.lock
 
 bin/
 obj/
-
-**/node_modules
-
-__pycache__
