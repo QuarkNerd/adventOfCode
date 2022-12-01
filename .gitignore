@@ -16,3 +16,17 @@ obj/
 **/node_modules
 
 __pycache__
+
+#### 2022
+# Gradle
+.gradle
+build/
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# IntelliJ
+.idea
+*.iml
+*.ipr
+*.iws
+out/
