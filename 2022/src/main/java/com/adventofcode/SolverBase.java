@@ -6,12 +6,11 @@ public abstract class SolverBase {
     protected void run(String inputFilename) {
         String input = Util.getInput(inputFilename);
         long startTime = System.currentTimeMillis();
-        SolutionPair solutions = this.solve(input);
+        SolutionPair solution = this.solve(input);
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
 
         System.out.println("Execution time in milliseconds: " + totalTime);
-        System.out.println("Part one: " + solutions.partOne.toString());
-        System.out.println("Part Two: " + solutions.partTwo.toString());
+        solution.print();
     }
 }
