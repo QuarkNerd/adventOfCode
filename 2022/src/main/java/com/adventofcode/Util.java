@@ -6,6 +6,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 public class Util {
@@ -22,5 +24,11 @@ public class Util {
 
     static public List<String> split(String input, String deliminator) {
         return Arrays.stream(input.split(deliminator)).collect(Collectors.toList());
+    }
+
+    static public <E> Integer mapSum(List<E> lines, ToIntFunction<E> mapper) {
+        return lines.stream()
+                .mapToInt(mapper)
+                .reduce(0, Integer::sum);
     }
 }
