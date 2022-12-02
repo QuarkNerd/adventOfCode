@@ -19,10 +19,11 @@ public class Day_01 extends SolverBase {
 
         return new SolutionPair(
                 threeHighest.get(0),
-                threeHighest.stream().reduce(0, (a, b) -> a + b));
+                threeHighest.stream().reduce(0, Integer::sum)
+        );
     }
 
     private static Integer getTotalCalories(String calorieBlock) {
-        return Arrays.stream(calorieBlock.split(System.lineSeparator())).map(Integer::valueOf).reduce(0, (a, b) -> a + b);
+        return Arrays.stream(calorieBlock.split(System.lineSeparator())).map(Integer::valueOf).reduce(0, Integer::sum);
     }
 }
