@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Day_01 extends SolverBase {
-    public static void main(String[] args) { (new Day_01()).run("Day_01"); }
+    public static void main(String[] args) { (new Day_01()).run(); }
 
     public SolutionPair solve(String input) {
         List<String> split = Util.split(input, System.lineSeparator() + System.lineSeparator());

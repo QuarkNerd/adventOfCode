@@ -3,17 +3,21 @@ package com.adventofcode;
 import java.util.List;
 
 public class Day_02 extends SolverBase {
-    public static void main(String[] args) { (new Day_02()).run("Day_02"); }
+    public static void main(String[] args) { (new Day_02()).run(); }
 
     public SolutionPair solve(String input) {
         List<String> lines = Util.split(input, System.lineSeparator());
+
+        Cache<String, Integer> cacheRoundOne = new Cache<>(Day_02::scoreRoundPartOne);
+        Cache<String, Integer> cacheRoundTwo = new Cache<>(Day_02::scoreRoundPartTwo);
+
         return new SolutionPair(
-                Util.mapSum(lines, Day_02::scoreRoundPartOne),
-                Util.mapSum(lines, Day_02::scoreRoundPartTwo)
+                Util.mapSum(lines, cacheRoundOne::get),
+                Util.mapSum(lines, cacheRoundTwo::get)
         );
     }
 
-    private static int scoreRoundPartOne(String round) {
+    public static int scoreRoundPartOne(String round) {
         String[] split = round.split( " ");
         Item them = Item.fromCode(split[0]);
         Item me = Item.fromCode(split[1]);
