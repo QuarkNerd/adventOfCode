@@ -6,12 +6,11 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.ToDoubleFunction;
+import java.util.NavigableMap;
+import java.util.SortedMap;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Util {
     static public String getInput(String fileName) {
@@ -61,5 +60,11 @@ public class Util {
         } catch (Exception e) {
             throw new RuntimeException("The super safe method failed");
         }
+    }
+
+    static public <E> SortedMap<String, E> getByPrefix(
+            NavigableMap<String, E> myMap,
+            String prefix ) {
+        return myMap.subMap( prefix, prefix + Character.MAX_VALUE );
     }
 }
