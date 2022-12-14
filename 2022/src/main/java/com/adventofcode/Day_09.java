@@ -38,8 +38,8 @@ public class Day_09 extends SolverBase {
                 }
             }
 
-            public void moveHead(Direction dir) {
-                switch (dir) {
+            public void moveHead(Direction direction) {
+                switch (direction) {
                     case Right:
                         knots[0].translateMut(1, 0);
                         break;
@@ -108,22 +108,3 @@ public class Day_09 extends SolverBase {
             return this.x + "," + this.y;
         }
     }
-
-    enum Direction {
-        Right, Left, Up, Down;
-
-        public static Direction fromCode(String code) {
-            switch (code) {
-                case "R":
-                    return Direction.Right;
-                case "L":
-                    return Direction.Left;
-                case "U":
-                    return Direction.Up;
-                case "D":
-                    return Direction.Down;
-                default:
-                    throw new RuntimeException("Invalid code: " + code);
-            }
-        }
-}
