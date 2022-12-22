@@ -6,126 +6,83 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Day_18 extends SolverBase {
-    public static void main(String[] args) { (new Day_18()).run(); }
+    public static void main(String[] args) {
+        (new Day_18()).run();
+    }
 
     protected SolutionPair solve(String input) {
-        HashSet<String> f = new HashSet<>();
-        int count = 0;//countExternalSides(Util.split(input, System.lineSeparator()));
+        Set<Node> boulders = Arrays.stream(input.split(System.lineSeparator())).map(line -> {
+            int[] xyz = Arrays.stream(line.split(",")).mapToInt(Integer::parseInt).toArray();
+            return new Node(xyz[0], xyz[1], xyz[2]);
+        }).collect(Collectors.toSet());
 
-        int[] max = new int[3];
 
-        for (String line: input.split(System.lineSeparator())) {
-            int[] xyz = Arrays.stream(line.split(",")).mapToInt(Integer::valueOf).toArray();
+        Set<Node> bfsVisited = new HashSet<>();
+        List<Node> current = new ArrayList<>();
+        current.add(new Node(1,1,1));
+        bfsVisited.add(new Node(1,1,1));
 
-            for (int i = 0; i < 3; i++) {
-                if (xyz[i] > max[i]) {
-                    max[i] = xyz[i];
-                }
-            }
-
-            count+=6;
-            long a = getConnected(xyz).stream().filter(con -> f.contains(
-                    con[0] + "," + con[1] + "," + con[2])).count();
-            count -= 2*a;
-            f.add(line);
-        }
-
-        Set<String> bfsVisited = new HashSet<>();
-        List<int[]> current = new ArrayList<>();
-        current.add(new int[]{1,1,1});
-        bfsVisited.add("1,1,1");
-
+        // BFS search to find all nodes not in pockets
         while (!current.isEmpty()) {
-//            bfsVisited.addAll(current.stream().map(this::c).toList());
+            List<Node> newCurrent = new ArrayList<>();
 
-            List<int[]> newCurrent = new ArrayList<>();
-
-            for (int[] node: current) {
-                List<int[]> con = getConnected(node).stream().filter(
+            for (Node node: current) {
+                List<Node> connected = getConnected(node).stream().filter(
                         x -> {
-                            for (int i = 0; i < 3; i++) {
-                                if (x[i] < 0 || x[i] > 20) return false;
-                            }
+                            if (
+                                node.x < 0 || node.x > 20 ||
+                                node.y < 0 || node.y > 20 ||
+                                node.z < 0 || node.z > 20
+                            ) { return false; }
 
-                            String cc = c(x);
-                            boolean b = !bfsVisited.contains(cc);
-                            boolean a = !f.contains(cc);
-
-                            return b && a;
+                            return !bfsVisited.contains(x) && !boulders.contains(x);
                         }).toList();
 
-                bfsVisited.addAll(con.stream().map(this::c).toList());
-                newCurrent.addAll(con);
+                bfsVisited.addAll(connected);
+                newCurrent.addAll(connected);
             }
 
             current = newCurrent;
-
-//            current = current.stream().flatMap(x -> getConnected(x).stream()).filter
         }
 
-        Set<String> pocketed = new HashSet<>();
+        Set<Node> pocketed = new HashSet<>();
 
         for (int x = 0; x < 21; x++) {
             for (int y = 0; y < 21; y++) {
                 for (int z = 0; z < 21; z++) {
-                    String cube = x + "," + y + "," + z;
-                    if (!bfsVisited.contains(cube) && !f.contains(cube)) pocketed.add(cube);
+                    Node cube = new Node(x,y,z);
+                    if (!bfsVisited.contains(cube) && !boulders.contains(cube)) pocketed.add(cube);
                 }
             }
         }
 
-        int ggg = countExternalSides(pocketed);
-
-
-
-        return new SolutionPair(count, count - ggg);
+        int externalSides = countExternalSides(boulders);
+        return new SolutionPair(externalSides, externalSides - countExternalSides(pocketed));
     }
 
-    private List<int[]> getConnected(int[] cube) {
-        List<int[]> connected = new ArrayList<>();
-        int[] pp = new int[] {-1,1};
-        for (int dx: pp) {
-            int x = cube[0] + dx;
-            connected.add(new int[] {x, cube[1], cube[2]});
+    private List<Node> getConnected(Node cube) {
+        List<Node> connected = new ArrayList<>();
+        int[] pp = new int[]{-1, 1};
+        for (int dx : pp) {
+            int x = cube.x + dx;
+            connected.add(new Node(x, cube.y, cube.z));
         }
-        for (int dy: pp) {
-            int y = cube[1] + dy;
-            connected.add(new int[] {cube[0], y, cube[2]});
+        for (int dy : pp) {
+            int y = cube.y + dy;
+            connected.add(new Node(cube.x, y, cube.z));
         }
-        for (int dz: pp) {
-            int z = cube[2] + dz;
-            connected.add(new int[] {cube[0], cube[1], z});
+        for (int dz : pp) {
+            int z = cube.z + dz;
+            connected.add(new Node(cube.x, cube.y, z));
         }
         return connected;
     }
 
-    public String c(int[] c) {
-        return c[0] + "," + c[1] + "," +c[2];
-    }
-
-    public int countExternalSides(Collection<String> cubes) {
-        HashSet<String> f = new HashSet<>();
-        int count = 0;
-
-        int[] max = new int[3];
-
-        for (String line: cubes) {
-            int[] xyz = Arrays.stream(line.split(",")).mapToInt(Integer::valueOf).toArray();
-
-            for (int i = 0; i < 3; i++) {
-                if (xyz[i] > max[i]) {
-                    max[i] = xyz[i];
-                }
-            }
-
-            count+=6;
-            long a = getConnected(xyz).stream().filter(con -> f.contains(
-                    con[0] + "," + con[1] + "," + con[2])).count();
-            count -= 2*a;
-            f.add(line);
-        }
-        return count;
+    public int countExternalSides(Collection<Node> boulders) {
+        long touchingSides = boulders.stream().flatMap(b -> getConnected(b).stream()).filter((boulders::contains)).count();
+        return (int) (6*boulders.size() - touchingSides);
     }
 }
