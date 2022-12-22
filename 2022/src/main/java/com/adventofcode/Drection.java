@@ -37,4 +37,32 @@ enum Direction {
         }
         return 0;
     }
+
+    public Direction getRotatedRight() {
+        switch (this) {
+            case Up:
+                return Right;
+            case Right:
+                return Down;
+            case Down:
+                return Left;
+            case Left:
+                return Up;
+        }
+        return null;
+    }
+
+    public Direction getRotatedLeft() {
+        switch (this) {
+            case Up:
+                return Left;
+            case Right:
+                return Up;
+            case Down:
+                return Right;
+            case Left:
+                return Down;
+        }
+        return null;
+    }
 }
