@@ -93,14 +93,8 @@ public class Day_23 extends SolverBase {
 
     private Set<EightWayDirection> getFreeSquares(Set<Node> allElves, Node elf) {
         return Stream.of(EightWayDirection.UpLeft, EightWayDirection.Up, EightWayDirection.UpRight, EightWayDirection.Left, EightWayDirection.Right, EightWayDirection.DownLeft, EightWayDirection.Down, EightWayDirection.DownRight)
-//                .map(x -> !allElves.contains(getNeighbor(elf, x)))
                 .filter(x -> !allElves.contains(getNeighbor(elf, x))).collect(Collectors.toSet());
     }
-
-//    private boolean checkAll(Set<Node> allElves, Node elf) {
-//        return Stream.of(EightWayDirection.UpLeft, EightWayDirection.Up, EightWayDirection.UpRight, EightWayDirection.Left, EightWayDirection.Right, EightWayDirection.DownLeft, EightWayDirection.Down, EightWayDirection.DownRight)
-//                .noneMatch(x -> allElves.contains(getNeighbor(elf, x)));
-//    }
 
     private boolean checkDirection(Set<EightWayDirection> freeSquares, Direction dir) {
         Stream<EightWayDirection> locationsToCheck = switch (dir) {
@@ -112,17 +106,6 @@ public class Day_23 extends SolverBase {
 
         return locationsToCheck.allMatch(freeSquares::contains);
     }
-
-//    private boolean checkDirection(Set<Node> allElves, Node elf, Direction dir) {
-//        Stream<EightWayDirection> locationsToCheck = switch (dir) {
-//            case Up -> Stream.of(EightWayDirection.UpLeft,EightWayDirection.Up, EightWayDirection.UpRight);
-//            case Right -> Stream.of(EightWayDirection.UpRight, EightWayDirection.Right, EightWayDirection.DownRight);
-//            case Down -> Stream.of(EightWayDirection.DownLeft, EightWayDirection.Down, EightWayDirection.DownRight);
-//            case Left -> Stream.of(EightWayDirection.UpLeft, EightWayDirection.Left, EightWayDirection.DownLeft);
-//        };
-//
-//        return locationsToCheck.noneMatch(diri -> allElves.contains(getNeighbor(elf, diri)));
-//    }
 
     private Node getNeighbor(Node elf, EightWayDirection direction) {
         return switch (direction) {
