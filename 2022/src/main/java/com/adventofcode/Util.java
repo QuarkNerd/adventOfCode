@@ -39,6 +39,20 @@ public class Util {
         return checkString.length() != checkString.chars().distinct().count();
     }
 
+    public static Integer safeParseInteger(String strNum) {
+        if (strNum == null) {
+            return null;
+        }
+
+        Integer d;
+        try {
+            d = Integer.valueOf(strNum);
+        } catch (NumberFormatException nfe) {
+            return null;
+        }
+        return d;
+    }
+
     // wow very type much safe code
     static public <E> List<E> cloneRecursively(List<E> list) {
         try {

@@ -3,7 +3,6 @@ package com.adventofcode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class Day_05 extends SolverBase {
@@ -44,6 +43,8 @@ public class Day_05 extends SolverBase {
 
                 int stackPosition = stackNum*4 + 1;
                 for (int i = spl.size() - 2; i >= 0; i--) {
+                    String row = spl.get(i);
+                    if (row.length() < stackPosition) continue;
                     Character box = spl.get(i).charAt(stackPosition);
                     if (box == ' ') break;
                     stack.add(0, box);

@@ -38,7 +38,7 @@ public class Day_15 extends SolverBase {
     private static long solvePartTwo(List<DataPoint> dataPointList) {
         for (int i = 0; i < dataPointList.size(); i++) {
             DataPoint pointOne = dataPointList.get(i);
-            for (int j = 1; j < dataPointList.size(); j++) {
+            for (int j = i; j < dataPointList.size(); j++) {
                 List<Node> intersectionPoints = pointOne.getBlobsAroundIntersections(dataPointList.get(j));
                 for (Node interPoint: intersectionPoints) {
                     if (interPoint.x < 0 || interPoint.x > 4000000 || interPoint.y < 0 || interPoint.y > 4000000) continue;

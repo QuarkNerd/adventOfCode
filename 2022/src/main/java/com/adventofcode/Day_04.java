@@ -1,11 +1,7 @@
 package com.adventofcode;
 
-import com.google.common.collect.Lists;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class Day_04 extends SolverBase {
@@ -16,8 +12,8 @@ public class Day_04 extends SolverBase {
 
         int partOne = 0;
         int partTwo = 0;
-        for (int i = 0; i < lines.size(); i++) {
-            List<Integer> parsed = parseLine(lines.get(i));
+        for (String line : lines) {
+            List<Integer> parsed = parseLine(line);
 
             if (
                     (parsed.get(2) <= parsed.get(1) && parsed.get(3) >= parsed.get(0)) ||

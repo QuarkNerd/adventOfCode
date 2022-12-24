@@ -1,11 +1,8 @@
 package com.adventofcode;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 public class Day_07 extends SolverBase {
     public static void main(String[] args) { (new Day_07()).run(); }
@@ -16,9 +13,8 @@ public class Day_07 extends SolverBase {
         Stack<String> directory = new Stack<>();
         HashMap<String, Integer> directorySizes = new HashMap<>();
 
-        int lineCount = lines.size();
-        for (int i = 0; i < lineCount; i++) {
-            String[] spl = lines.get(i).split(" ");
+        for (String line : lines) {
+            String[] spl = line.split(" ");
 
             if (spl[1].equals("ls") || spl[0].equals("dir")) continue;
 
@@ -39,7 +35,6 @@ public class Day_07 extends SolverBase {
             });
         }
 
-        System.out.println(directorySizes.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getValue)).collect(Collectors.toList()));
         int spaceToClear = 30000000 - (70000000 - directorySizes.get("/"));
 
         return new SolutionPair(
