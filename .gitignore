@@ -23,6 +23,7 @@ __pycache__
 build/
 !gradle-wrapper.jar
 .gradletasknamecache
+resources
 
 # IntelliJ
 .idea

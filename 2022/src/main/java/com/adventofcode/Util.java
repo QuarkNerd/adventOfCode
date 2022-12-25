@@ -7,8 +7,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NavigableMap;
-import java.util.SortedMap;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
@@ -74,11 +72,5 @@ public class Util {
         } catch (Exception e) {
             throw new RuntimeException("The super safe method failed");
         }
-    }
-
-    static public <E> SortedMap<String, E> getByPrefix(
-            NavigableMap<String, E> myMap,
-            String prefix ) {
-        return myMap.subMap( prefix, prefix + Character.MAX_VALUE );
     }
 }

@@ -47,6 +47,6 @@ public class Day_03 extends SolverBase {
 
     private static Set<Integer> computeSetOfCharCodes(String str) {
         return str.chars()
-                .mapToObj(e->(int)e).collect(Collectors.toSet());
+                .mapToObj(e->e).collect(Collectors.toSet());
     }
 }

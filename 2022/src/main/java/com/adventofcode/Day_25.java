@@ -7,7 +7,7 @@ public class Day_25 extends SolverBase {
 
     public SolutionPair solve(String input) {
         String[] lines = input.split(System.lineSeparator());
-        long decimal = Arrays.stream(lines).map(this::parseSNAFU).reduce(Long::sum).get();
+        long decimal = Arrays.stream(lines).map(this::parseSNAFU).reduce(0L, Long::sum);
         return new SolutionPair(
                 convertToSNAFU(decimal), "There is no part two"
         );
@@ -60,5 +60,4 @@ public class Day_25 extends SolverBase {
         }
         return decimal;
     }
-
 }
