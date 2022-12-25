@@ -48,19 +48,19 @@ public class Day_20 extends SolverBase {
 
     public void mix(List<Number> toMix, List<Number> sequence) {
         Long modVal = Long.valueOf(toMix.size() - 1);
-            for (Number n : sequence) {
-                int index = toMix.indexOf(n);
-                Number val = toMix.remove(index);
-                Long newindex = Math.floorMod(index + n.value, modVal);
-                toMix.add(Math.toIntExact(newindex), val);
-            }
+        for (Number n : sequence) {
+            int index = toMix.indexOf(n);
+            Number val = toMix.remove(index);
+            Long newindex = Math.floorMod(index + n.value, modVal);
+            toMix.add(Math.toIntExact(newindex), val);
+        }
     }
-}
 
-class Number {
-    public Long value;
+    class Number {
+        public Long value;
 
-    Number(Long value) {
-        this.value = value;
+        Number(Long value) {
+            this.value = value;
+        }
     }
 }

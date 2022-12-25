@@ -27,48 +27,46 @@ public class Day_09 extends SolverBase {
         return new SolutionPair(partOne.size(), partTwo.size());
     }
 
+    class Rope {
+        public Vector[] knots;
 
-        class Rope {
-            public Vector[] knots;
+        Rope(int size) {
+            knots = new Vector[size];
+            for(int i = 0; i < knots.length ; i++) {
+                knots[i] = new Vector(0,0);
+            }
+        }
 
-            Rope(int size) {
-               knots = new Vector[size];
-                for(int i = 0; i < knots.length ; i++) {
-                    knots[i] = new Vector(0,0);
-                }
+        public void moveHead(Direction direction) {
+            switch (direction) {
+                case Right:
+                    knots[0].translateMut(1, 0);
+                    break;
+                case Left:
+                    knots[0].translateMut(-1, 0);
+                    break;
+                case Up:
+                    knots[0].translateMut(0, 1);
+                    break;
+                case Down:
+                    knots[0].translateMut(0, -1);
+                    break;
             }
 
-            public void moveHead(Direction direction) {
-                switch (direction) {
-                    case Right:
-                        knots[0].translateMut(1, 0);
-                        break;
-                    case Left:
-                        knots[0].translateMut(-1, 0);
-                        break;
-                    case Up:
-                        knots[0].translateMut(0, 1);
-                        break;
-                    case Down:
-                        knots[0].translateMut(0, -1);
-                        break;
-                }
+            for (int i=0; i < knots.length - 1; i++) {
+                Vector segmentHead = knots[i];
+                Vector segmentTail = knots[i + 1];
 
-                for (int i=0; i < knots.length - 1; i++) {
-                    Vector segmentHead = knots[i];
-                    Vector segmentTail = knots[i + 1];
-
-                    if (segmentHead.getDistanceSquared(segmentTail) >= 4) {
-                        Vector diff = segmentHead.subtract(segmentTail);
-                        diff.reduceToSignMut();
-                        segmentTail.translateMut(diff);
-                    }
+                if (segmentHead.getDistanceSquared(segmentTail) >= 4) {
+                    Vector diff = segmentHead.subtract(segmentTail);
+                    diff.reduceToSignMut();
+                    segmentTail.translateMut(diff);
                 }
             }
+        }
 
-            public Vector getKnotAt(int n) {
-                return knots[n];
-            }
+        public Vector getKnotAt(int n) {
+            return knots[n];
         }
     }
 
@@ -108,3 +106,4 @@ public class Day_09 extends SolverBase {
             return this.x + "," + this.y;
         }
     }
+}

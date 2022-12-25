@@ -151,56 +151,56 @@ public class Day_16 extends SolverBase {
             }
         }
     }
-}
 
-class Route {
-    static public Route fromNode(String node) {
-        List<String> path = new ArrayList<>();
-        path.add(node);
-        return new Route(path, 0);
-    }
-
-    public final int timeTaken;
-
-    public String getCurrentNode() {
-        return this.path.get(this.path.size() - 1);
-    }
-
-    public Route add(String node) {
-        List<String> clonedPath = new ArrayList(this.path);
-        clonedPath.add(node);
-
-        int newTime = this.timeTaken + Day_16.directDuration.get(node, this.getCurrentNode()) + 1;
-        return new Route(clonedPath, newTime);
-    }
-
-    public Set<String> getAllNodes() {
-        return this.path.stream().collect(Collectors.toSet());
-    }
-
-    public boolean canVisit(String node, int time) {
-        if (this.path.contains(node)) return false;
-        int totalTimeTaken = this.timeTaken + Day_16.directDuration.get(this.getCurrentNode(), node) + 1;
-        int timeRemaining = time - totalTimeTaken;
-        return timeRemaining > 0;
-    }
-
-    public int calculatePressureAt(int time) {
-        int totalPressure = 0;
-        int currentTime = 0;
-
-        for (int i = 0; i < this.path.size() - 1; i++) {
-            int pressure = Day_16.pressures.get(this.path.get(i + 1));
-            currentTime += Day_16.directDuration.get(this.path.get(i + 1), this.path.get(i)) + 1;
-            totalPressure += (time - currentTime) * pressure;
+    static class Route {
+        static public Route fromNode(String node) {
+            List<String> path = new ArrayList<>();
+            path.add(node);
+            return new Route(path, 0);
         }
-        return totalPressure;
-    }
 
-    private final List<String> path;
+        public final int timeTaken;
 
-    private Route(List<String> path, int timeTaken) {
-        this.path = path;
-        this.timeTaken = timeTaken;
+        public String getCurrentNode() {
+            return this.path.get(this.path.size() - 1);
+        }
+
+        public Route add(String node) {
+            List<String> clonedPath = new ArrayList(this.path);
+            clonedPath.add(node);
+
+            int newTime = this.timeTaken + Day_16.directDuration.get(node, this.getCurrentNode()) + 1;
+            return new Route(clonedPath, newTime);
+        }
+
+        public Set<String> getAllNodes() {
+            return this.path.stream().collect(Collectors.toSet());
+        }
+
+        public boolean canVisit(String node, int time) {
+            if (this.path.contains(node)) return false;
+            int totalTimeTaken = this.timeTaken + Day_16.directDuration.get(this.getCurrentNode(), node) + 1;
+            int timeRemaining = time - totalTimeTaken;
+            return timeRemaining > 0;
+        }
+
+        public int calculatePressureAt(int time) {
+            int totalPressure = 0;
+            int currentTime = 0;
+
+            for (int i = 0; i < this.path.size() - 1; i++) {
+                int pressure = Day_16.pressures.get(this.path.get(i + 1));
+                currentTime += Day_16.directDuration.get(this.path.get(i + 1), this.path.get(i)) + 1;
+                totalPressure += (time - currentTime) * pressure;
+            }
+            return totalPressure;
+        }
+
+        private final List<String> path;
+
+        private Route(List<String> path, int timeTaken) {
+            this.path = path;
+            this.timeTaken = timeTaken;
+        }
     }
 }
