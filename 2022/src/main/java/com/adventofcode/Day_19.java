@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // Couldnt get part two under 1s, takes about 7s;
+// didnt use bfs code since side effects used here to speed up
 public class Day_19 extends SolverBase {
     public static void main(String[] args) { (new Day_19()).run(); }
     

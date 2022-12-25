@@ -20,33 +20,23 @@ public class Day_18 extends SolverBase {
         }).collect(Collectors.toSet());
 
 
-        Set<Node> bfsVisited = new HashSet<>();
-        List<Node> current = new ArrayList<>();
-        current.add(new Node(1,1,1));
-        bfsVisited.add(new Node(1,1,1));
-
-        // BFS search to find all nodes not in pockets
-        while (!current.isEmpty()) {
-            List<Node> newCurrent = new ArrayList<>();
-
-            for (Node node: current) {
-                List<Node> connected = getConnected(node).stream().filter(
+        Set<Node> bfsVisited = ShortestPathBFS.find(
+                new Node(1,1,1),
+                null,
+                (node, _dist) ->
+                        getConnected(node).stream().filter(
                         x -> {
                             if (
-                                node.x < 0 || node.x > 20 ||
-                                node.y < 0 || node.y > 20 ||
-                                node.z < 0 || node.z > 20
-                            ) { return false; }
+                                    node.x < 0 || node.x > 20 ||
+                                            node.y < 0 || node.y > 20 ||
+                                            node.z < 0 || node.z > 20
+                            ) {
+                                return false;
+                            }
 
-                            return !bfsVisited.contains(x) && !boulders.contains(x);
-                        }).toList();
-
-                bfsVisited.addAll(connected);
-                newCurrent.addAll(connected);
-            }
-
-            current = newCurrent;
-        }
+                            return !boulders.contains(x);
+                        }
+                ), true).visited;
 
         Set<Node> pocketed = new HashSet<>();
 

@@ -1,9 +1,7 @@
 package com.adventofcode;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 public class Day_24 extends SolverBase {
@@ -17,55 +15,40 @@ public class Day_24 extends SolverBase {
         Node start = new Node(0, -1);
         Node end = new Node(width - 1, height);
 
-        int firstJourney = getQuickestPath(start, end, width, height, wind);
-        int journeyBack = getQuickestPath(end, start, width, height, wind);
-        int finalJourney = getQuickestPath(start, end, width, height, wind);
+        int firstJourney = getQuickestPath(start, end, width, height, wind, 0);
+        int backAndForth = getQuickestPath(end, start, width, height, wind, firstJourney);
+        int total = getQuickestPath(start, end, width, height, wind, backAndForth);
 
-        return new SolutionPair(firstJourney,firstJourney + journeyBack + finalJourney + 2);
+        return new SolutionPair(firstJourney - 1, total -1);
     }
 
-    private int getQuickestPath(Node start, Node end, int width, int height, WindState wind) {
-        Set<Node> current = new HashSet<>();
-        current.add(start);
-
-        int minute = 0;
-        while (true) {
-            minute++;
-            Set<Node> newCurrent = new HashSet<>();
-
-            for (Node node : current) {
-                for (Node conNode : getConnected(node)) {
-                    if (conNode.equals(new Node(0, -1))  || conNode.equals(new Node(width - 1, height)) ||
-                            (conNode.y >= 0 && conNode.x >= 0 && conNode.x < width && (conNode.y < height) &&
-                            wind.isFree(conNode))
-                    ) {
-                        newCurrent.add(conNode);
-                    }
-                }
-
-                if (newCurrent.contains(end)) {
-                    wind.nextStep();
-                    return minute - 1;
-                }
-            }
-
-            current = newCurrent;
-            wind.nextStep();
-        }
+    private int getQuickestPath(Node start, Node end, int width, int height, WindState wind, int timestart) {
+        return timestart + (int) ShortestPathBFS.find(
+                start,
+                node -> node.equals(end),
+                (node, time) -> getConnected(node)
+                        .stream()
+                        .filter(
+                            connectedNode -> connectedNode.equals(new Node(0, -1))  || connectedNode.equals(new Node(width - 1, height)) ||
+                            (connectedNode.y >= 0 && connectedNode.x >= 0 && connectedNode.x < width && (connectedNode.y < height) &&
+                            wind.isFree(connectedNode, (int) time + timestart)
+                        )),
+                false
+        ).dist;
     }
 
-    private List<Node> getConnected(Node cube) {
+    private List<Node> getConnected(Node node) {
         List<Node> connected = new ArrayList<>();
         int[] pp = new int[]{-1, 1};
         for (int dx : pp) {
-            int x = cube.x + dx;
-            connected.add(new Node(x, cube.y));
+            int x = node.x + dx;
+            connected.add(new Node(x, node.y));
         }
         for (int dy : pp) {
-            int y = cube.y + dy;
-            connected.add(new Node(cube.x, y));
+            int y = node.y + dy;
+            connected.add(new Node(node.x, y));
         }
-        connected.add(cube);
+        connected.add(node);
         return connected;
     }
 
@@ -77,7 +60,7 @@ public class Day_24 extends SolverBase {
         private int height;
         private int width;
 
-        private int minute = 0;
+//        private int minute = 0;
 
         WindState(String input) {
             String[] lines = input.split(System.lineSeparator());
@@ -108,15 +91,15 @@ public class Day_24 extends SolverBase {
             }
         }
 
-        private boolean isFree(Node position) {
+        private boolean isFree(Node position, int minute) {
             return !up[position.x][(position.y + minute)%height] &&
                 !down[position.x][ Math.floorMod(position.y - minute, height)] &&
                 !right[Math.floorMod(position.x - minute, width)][position.y] &&
                 !left[(position.x + minute)%width][position.y];
         }
 
-        private void nextStep() {
-            minute = (minute + 1)%(height*width);
-        }
+//        private void nextStep() {
+//            minute = (minute + 1);
+//        }
     }
 }

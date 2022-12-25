@@ -31,7 +31,7 @@ public class Day_16 extends SolverBase {
         int maxPressurePartOne = 0;
         Map<Set<String>, Integer> finalPossiblePressuresPartTwo = new HashMap();
 
-        while (activeRoutes.size() > 0) {
+        while (!activeRoutes.isEmpty()) {
             List<Route> nextActiveRoutes = new ArrayList<>();
             for (Route route : activeRoutes) {
 
