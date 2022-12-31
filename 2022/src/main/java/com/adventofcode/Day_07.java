@@ -27,7 +27,7 @@ public class Day_07 extends SolverBase {
                 }
                 continue;
             }
-            Integer fileSize = Integer.valueOf(spl[0]);
+            int fileSize = Integer.parseInt(spl[0]);
             directory.stream().forEach(dir -> {
                 directorySizes.compute(dir, (key, prevValue) ->
                         prevValue == null ? fileSize : fileSize + prevValue

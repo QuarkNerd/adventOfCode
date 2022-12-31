@@ -16,7 +16,7 @@ public class Day_10 extends SolverBase {
             Integer latestValue = xValues.get(xValues.size() - 1);
             xValues.add(latestValue);
             if (op.equals("noop")) { continue; }
-            Integer change = Integer.valueOf(op.split(" ")[1]);
+            int change = Integer.parseInt(op.split(" ")[1]);
             xValues.add(latestValue + change);
         }
         Integer signalStrength = IntStream.range(0, 6)
