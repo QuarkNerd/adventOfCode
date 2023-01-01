@@ -17,12 +17,8 @@ function txtColour(string, colour) {
     }
 }
 
-function getBoxDisplay(code) {
+function displayBox(code) {
     return code ? 'l' + code + 'r' : '   ';
-  }
-  
-function getBoxFromState(state, stackNum, position) {
-    return state[stackNum][position];
 }
 
 function wait(ms) {
@@ -34,5 +30,5 @@ function wait(ms) {
 }
 
 module.exports = {
-    txtColour, getBoxDisplay, getBoxFromState, wait
+    txtColour, displayBox, wait
 }

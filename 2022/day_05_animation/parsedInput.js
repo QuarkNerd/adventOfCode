@@ -1,10 +1,9 @@
 const fs = require('fs');
 const {EOL} = require('os');
 
-const file = fs.readFileSync('./input.txt', {encoding:'utf8', flag:'r'});
-
-function parseInput(txt) {
-  const [stacksText, instructionsText] = txt.split(EOL + EOL);
+function parseInput() {
+    const txt = fs.readFileSync('./input.txt', {encoding:'utf8', flag:'r'});
+    const [stacksText, instructionsText] = txt.split(EOL + EOL);
 
   const stackLines = stacksText.split(EOL);
   const stacks = (new Array(9)).fill(0).map((x,i) => i).map(
@@ -29,5 +28,12 @@ function parseInput(txt) {
 
     return {stacks, instructionList};
 }
+let input;
 
-module.exports = parseInput(file);
+try {
+    input = parseInput();
+} catch {
+    throw new Error('Error parsing input. Ensure these is a file named \'input.txt\' at the root of the project. The input has to be a full input, not the sample input');
+}
+
+module.exports = input;

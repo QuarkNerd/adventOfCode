@@ -1,6 +1,6 @@
 const {stacks, instructionList} = require('./parsedInput')
 const { DEFAULT_FOREGROUND_ANSI, DEFAULT_BOT_Y, FRAME_HEIGHT } = require('./constants');
-const { txtColour, getBoxDisplay, getBoxFromState } = require('./utils');
+const { txtColour, displayBox } = require('./utils');
 const outputFrame = require('./outputFrame');
 
 console.log(DEFAULT_FOREGROUND_ANSI);
@@ -10,9 +10,7 @@ console.log(DEFAULT_FOREGROUND_ANSI);
 // Motion States
 // HORIZONTOL: index = null
 // VERTICAL: index is 0 if currently moving, > 0 if about to move
-// MOVE_BOX: index 0 for box `securely`,  1,2,3 for progressively closer to right stack and negatives for left
-
-// MOVE_BOX: index 0 for box `securely`,  1,2,3 for progressively closer to right stack and negatives for left
+// MOVE_BOX: index 0 for box `securely` on robot head,  1,2,3 for progressively closer to the stack on the right and negatives for left
 
 const bot = {
     x: 37, y: DEFAULT_BOT_Y, carrying: null, motionState: {
@@ -21,35 +19,35 @@ const bot = {
     }
 }
 
-let base = getBaseRows(stacks);
+let backgroundFrame = getFrameBackground(stacks);
 for(let i = 0; i < instructionList.length; i++) {
     const instruction = instructionList[i];
-    moveToTopOfStack(base, bot, instruction.from);
+    moveToTopOfStack(backgroundFrame, bot, instruction.from);
     bot.motionState.type = 'MOVE_BOX';
     bot.carrying = stacks[instruction.from - 1].pop();
-    base = getBaseRows(stacks);
+    backgroundFrame = getFrameBackground(stacks);
     const indexMultiplier = instruction.from%2 ? -1 : 1;
     for (let j = 3; j > -1; j--) {
         bot.motionState.index = indexMultiplier*j;
-        outputFrame(base, bot);
+        outputFrame(backgroundFrame, bot);
     }
-    outputFrame(base, bot);
-    outputFrame(base, bot);
+    outputFrame(backgroundFrame, bot);
+    outputFrame(backgroundFrame, bot);
 
-    moveToTopOfStack(base, bot, instruction.to, -1);
+    moveToTopOfStack(backgroundFrame, bot, instruction.to, -1);
     bot.motionState.type = 'MOVE_BOX';
     const toIndexMultiplier = instruction.to%2 ? -1 : 1;
     for (let j = 0; j < 4; j++) {
         bot.motionState.index = toIndexMultiplier*j;
-        outputFrame(base, bot);
+        outputFrame(backgroundFrame, bot);
     }
     bot.motionState.index = 0;
     stacks[instruction.to - 1].push(bot.carrying);
     bot.carrying = null;
-    base = getBaseRows(stacks);
-    outputFrame(base, bot);
-    outputFrame(base, bot);
-    outputFrame(base, bot);
+    backgroundFrame = getFrameBackground(stacks);
+    outputFrame(backgroundFrame, bot);
+    outputFrame(backgroundFrame, bot);
+    outputFrame(backgroundFrame, bot);
 };
 
 function moveToTopOfStack(base, bot, stackNum, Yoffset = 0) {
@@ -68,15 +66,6 @@ function moveToTopOfStack(base, bot, stackNum, Yoffset = 0) {
             bot.x += signDiff;
             outputFrame(base, bot);
         }
-
-        // if (bot.carrying && signDiff == -1 && Math.random() < 0.99) {
-        //     bot.motionState.type = 'DODGY';
-        //     for(let i = 0; i < 16; i++) {
-        //         // bot.x += signDiff;
-        //         bot.motionState.index = i;
-        //         outputFrame(base, bot);
-        //     }
-        // }
         bot.motionState.type = 'HORIZONTOL';
     }
 
@@ -102,31 +91,36 @@ function moveToY(base, bot, y) {
     }
 }
 
-function getBaseRows(stacks) {
-  const rows = [];
+// Returns the background of the frame as an array of strings, 
+// each string represneting a row of the frame.
+// No colours are added here, this is because colour characters 
+// affect the calculations of modifying the frames later on
+// transformForDisplay is used to add colour
+function getFrameBackground(stacks) {
+  const frame = [];
   for (let height = FRAME_HEIGHT - 6; height > -1; height--) {
     let line = '';
     for (let j = 0; j < 4; j++) {
-      const leftBox = getBoxFromState(stacks, 2*j, height);
-      const rightBox = getBoxFromState(stacks, 2*j + 1, height);
-      line += getBoxDisplay(leftBox) + '         ' + getBoxDisplay(rightBox);
+      const leftBox = stacks[2*j][height];
+      const rightBox = stacks[2*j + 1][height];
+      line += displayBox(leftBox) + '         ' + displayBox(rightBox);
     }
 
-    const rightMost = getBoxFromState(stacks, 8, height);
-    line +=  getBoxDisplay(rightMost)+ '      ';
-    rows.push(line);
+    const rightMost = stacks[8][height];
+    line +=  displayBox(rightMost)+ '      ';
+    frame.push(line);
   }
 
-  rows.push('===]       [======]       [======]       [======]       [======]     ');
+  frame.push('===]       [======]       [======]       [======]       [======]     ');
 
-  for(let i = 0; i < 2; i++) rows.push('|             ||             ||             ||             ||        ');
+  for(let i = 0; i < 2; i++) frame.push('|             ||             ||             ||             ||        ');
 
-  rows.push('|   b         ||   b         ||   b         ||   b         ||   b    ');
-  rows.push('|   h         ||   h         ||   h         ||   h         ||   h    ');
-  rows.push('==========================================================================');
+  frame.push('|   b         ||   b         ||   b         ||   b         ||   b    ');
+  frame.push('|   h         ||   h         ||   h         ||   h         ||   h    ');
+  frame.push('==========================================================================');
 
   const topBoxes = stacks.map(stack => stack.length ? `l${stack[stack.length - 1]}r`: txtColour(` # `, 'RED')).join('');
 
-  rows.push(topBoxes);
-  return rows;
+  frame.push(topBoxes);
+  return frame;
 }
