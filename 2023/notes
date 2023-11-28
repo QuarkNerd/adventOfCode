@@ -1,0 +1,16 @@
+cmd
+ -- delayed EnableDelayedExpansion gives power to !variables! which is just bizzare
+
+ shell
+  -- https://stackoverflow.com/questions/12916352/shell-script-read-missing-last-line
+  --- is slow parsed=$(echo $line | tr -d '\n' | tr -d '\r') 
+  ---- # while IFS= read -r line
+sql
+ -sqlite
+
+ vba 
+       'DirArray = Range("a1:a5").Value
+    'ActiveSheet.Range("A1").Select
+    'NOTES - was very slow using select
+    'Default editor never allows changing lives if something is wrong, good and annoying
+    'Maybe have to use Long
