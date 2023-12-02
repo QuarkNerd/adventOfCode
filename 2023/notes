@@ -14,3 +14,7 @@ sql
     'NOTES - was very slow using select
     'Default editor never allows changing lives if something is wrong, good and annoying
     'Maybe have to use Long
+
+    UNINSTALL
+   - scracth
+   - gcc and c++
