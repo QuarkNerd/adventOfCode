@@ -31,3 +31,7 @@ resources
 *.ipr
 *.iws
 out/
+
+#2023
+2023/**/input
+solution.exe
