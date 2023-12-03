@@ -15,6 +15,13 @@ sql
     'Default editor never allows changing lives if something is wrong, good and annoying
     'Maybe have to use Long
 
+lua
+ -- arrays can have any index (well its a table)
+ multiple values
+
     UNINSTALL
    - scracth
    - gcc and c++
+  ocaml
+  opam
+  lua
