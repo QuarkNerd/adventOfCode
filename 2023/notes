@@ -25,3 +25,15 @@ lua
   ocaml
   opam
   lua
+  msys2 and php 
+
+  the worst part is setup!!! e.g php xampp server then relaied cli
+  neeeds <?php
+echo "My first PHP script!";
+start with ready to read
+?>
+
+
+cmd - couldnt do two split string loops inside the first??
+what does /a do
+set /a cardCountArray[%%j + %%i]+=!cardCountArray[%%i]! wont work cause [%%j + %%i]
