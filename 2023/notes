@@ -37,3 +37,9 @@ start with ready to read
 cmd - couldnt do two split string loops inside the first??
 what does /a do
 set /a cardCountArray[%%j + %%i]+=!cardCountArray[%%i]! wont work cause [%%j + %%i]
+
+powershell -
+>> null to avid return issues
+Write-Host vs rest givng inconsistent displays
+Write-Output
+undefined is 0 or blank ect
