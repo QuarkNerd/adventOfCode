@@ -1,6 +1,10 @@
 cmd
  -- delayed EnableDelayedExpansion gives power to !variables! which is just bizzare
 
+powershell
+  Get-Content reads line by line and strips new lines so can split on mutliple new line
+  https://stackoverflow.com/questions/66934616/foreach-object-somehow-flattens-returned-values
+   >> null is needed in that function because we need to catch outputs
  shell
   -- https://stackoverflow.com/questions/12916352/shell-script-read-missing-last-line
   --- is slow parsed=$(echo $line | tr -d '\n' | tr -d '\r') 
@@ -43,3 +47,43 @@ powershell -
 Write-Host vs rest givng inconsistent displays
 Write-Output
 undefined is 0 or blank ect
+
+
+sql
+running indivisual commadns vs script
+
+
+Haskell
+https://www.seas.upenn.edu/~cis1940/spring13/lectures/01-intro.html
+http://learnyouahaskell.com/syntax-in-functions
+why when two arguents
+  String -> String -> Integer 
+  Order of executoin where clause?
+
+  oots :: (Float, Float, Float) -> (Float, Float)  
+roots (a,b,c) = (x1, x2) where 
+   x1 = e + sqrt d / (2 * a) 
+   x2 = e - sqrt d / (2 * a) 
+   d = b * b - 4 * a * c  
+   e = - b / (2 * a)  
+main = do 
+   putStrLn "The roots of our Polynomial equation are:" 
+   print (roots(1,-8,6))
+   https://medium.com/@olxc/switching-from-oop-to-functional-programming-4187698d4d3
+  = vs <-
+   nice to have array equality
+
+
+  PHP
+  $array = array(
+    "foo" => "bar",
+    "bar" => "foo",
+);
+
+// as of PHP 5.4
+$array = [
+    "foo" => "bar",
+    "bar" => "foo",
+];
+dollar sign variables
+referring methods by string
