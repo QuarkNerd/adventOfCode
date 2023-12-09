@@ -8,3 +8,6 @@ For Advent of Code 2023 (Aoc 2023) I'm going to try and solve each day with a di
 | 04  | CMD |  |
 | 05  | Powershell |  |
 | 06  | SQLlite |  |
+| 07  | Haskell |  |
+| 08  | php |  |
+| 08  | C++ |  |
