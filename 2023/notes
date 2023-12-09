@@ -59,7 +59,8 @@ http://learnyouahaskell.com/syntax-in-functions
 why when two arguents
   String -> String -> Integer 
   Order of executoin where clause?
-
+  all functions are curried
+great error messages
   oots :: (Float, Float, Float) -> (Float, Float)  
 roots (a,b,c) = (x1, x2) where 
    x1 = e + sqrt d / (2 * a) 
@@ -72,7 +73,7 @@ main = do
    https://medium.com/@olxc/switching-from-oop-to-functional-programming-4187698d4d3
   = vs <-
    nice to have array equality
-
+  good error messages
 
   PHP
   $array = array(
