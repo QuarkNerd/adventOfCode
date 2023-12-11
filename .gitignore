@@ -35,3 +35,9 @@ out/
 #2023
 2023/**/input
 solution.exe
+
+#haskell
+solution.hi 
+solution.o
+
+**/_build

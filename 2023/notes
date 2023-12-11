@@ -21,15 +21,7 @@ sql
 
 lua
  -- arrays can have any index (well its a table)
- multiple values
-
-    UNINSTALL
-   - scracth
-   - gcc and c++
-  ocaml
-  opam
-  lua
-  msys2 and php 
+ multiple value
 
   the worst part is setup!!! e.g php xampp server then relaied cli
   neeeds <?php
@@ -74,6 +66,7 @@ main = do
   = vs <-
    nice to have array equality
   good error messages
+  hardest funnes
 
   PHP
   $array = array(
@@ -88,3 +81,36 @@ $array = [
 ];
 dollar sign variables
 referring methods by string
+
+swift
+   naming variables when putting into method, but not automatically/ only for optional
+   extension StringProtocol {
+    var lines: [SubSequence] { split(whereSeparator: \.isNewline) }
+}
+for (y, line) in map.enumerated() {
+    if let idx = line.indexOf("S").encodedOffset {
+        let x = line.distance(from: line.startIndex, to: idx)
+        location = (x, y)
+    }
+}
+string gettng chatacters isnt super simple so made array fo carray of chars
+do ctach block is odd because you put try inside on each line
+let south = try map[i+1][j]
+nope this cant be caught
+extension Collection where Indices.Iterator.Element == Index {
+    subscript (safe index: Index) -> Iterator.Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+} 
+subscript means [] so here we do array[safe: index] to call
+errors arent great, coldnt see line nums?
+
+    UNINSTALL
+   - scracth
+   - gcc and c++
+  ocaml
+  opam
+  lua
+  msys2 and php 
+  swift
+  Ruby
