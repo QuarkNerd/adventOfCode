@@ -35,3 +35,5 @@ out/
 #2023
 2023/**/input
 solution.exe
+solution.hi
+solution.o
