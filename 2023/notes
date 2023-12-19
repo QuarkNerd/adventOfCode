@@ -105,6 +105,26 @@ extension Collection where Indices.Iterator.Element == Index {
 subscript means [] so here we do array[safe: index] to call
 errors arent great, coldnt see line nums?
 
+go
+ := shorthand
+ suggested to avoid functional and loops
+        j, err := strconv.Atoi(i)
+        if err != nil {
+            panic(err)
+        }
+when loping t map 0 comes from nowhere
+
+perl
+ # accidentally writig ture  and false which are effecitvely stirngs?
+# passing array as reference
+# equality
+# usineg $ on array
+#bitwise operaotors really helped
+
+odin
+Procedure used to be the common term as opposed to a function or subroutine. A function is a mathematical entity that has no side effects. A subroutine is something that has side effects but does not return anything.
+A procedure is a superset of functions and subroutines. A procedure may or may not return something. A procedure may or may not have side effects
+
     UNINSTALL
    - scracth
    - gcc and c++
@@ -114,3 +134,23 @@ errors arent great, coldnt see line nums?
   msys2 and php 
   swift
   Ruby
+  go
+  strawberry perl
+  groovy
+  D
+  odin
+  zig
+  scala - ~\AppData\Local\Coursier\data\bin
+  #
+
+?????????
+# ## # #   gaps = total length - hash length
+           forced gaps = hash-count - 1
+           gaps to play with = total length - hash length - hashcount + 1
+           potential locations = hash-count + 1
+           
+           a a a a
+           
+1 -> 4
+2 -> 10 
+3 

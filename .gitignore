@@ -35,9 +35,13 @@ out/
 #2023
 2023/**/input
 solution.exe
+solution.exe.obj
+solution.pdb
 
 #haskell
 solution.hi 
 solution.o
+#d lang
+solution.obj
 
 **/_build
