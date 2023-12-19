@@ -13,3 +13,11 @@ For Advent of Code 2023 (Aoc 2023) I'm going to try and solve each day with a di
 | 09  | C++ |  |
 | 10  | Swift |  |
 | 11  | Ruby |  |
+| 12  | Go |  |
+| 13  | Perl |  |
+| 14  |  |  |
+| 15  | F# |  |
+| 16  |  |  |
+| 17  |  |  |
+| 18  | Python |  |
+| 19  | D |  |
