@@ -125,6 +125,9 @@ odin
 Procedure used to be the common term as opposed to a function or subroutine. A function is a mathematical entity that has no side effects. A subroutine is something that has side effects but does not return anything.
 A procedure is a superset of functions and subroutines. A procedure may or may not return something. A procedure may or may not have side effects
 
+julia
+# 1 <= length(string(integer)) <= 2
+
     UNINSTALL
    - scracth
    - gcc and c++
@@ -140,8 +143,10 @@ A procedure is a superset of functions and subroutines. A procedure may or may n
   D
   odin
   zig
-  scala - ~\AppData\Local\Coursier\data\bin
+  scala - ~\AppData\Local\Coursier\data\bin and Metals scala plugin
+  pascal
   #
+  Elixir
 
 ?????????
 # ## # #   gaps = total length - hash length
