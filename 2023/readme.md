@@ -15,9 +15,11 @@ For Advent of Code 2023 (Aoc 2023) I'm going to try and solve each day with a di
 | 11  | Ruby |  |
 | 12  | Go |  |
 | 13  | Perl |  |
-| 14  |  |  |
+| 14  | VBScrpt |  |
 | 15  | F# |  |
-| 16  |  |  |
-| 17  |  |  |
+| 16  | Julia |  |
+| 17  | Scala | incomplete |
 | 18  | Python |  |
 | 19  | D |  |
+| 20  | Typescript |  |
+| 21  | Rust |  |
