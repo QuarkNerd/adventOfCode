@@ -7,7 +7,7 @@ For Advent of Code 2023 (Aoc 2023) I'm going to try and solve each day with a di
 | 03  | Lua |  |
 | 04  | CMD |  |
 | 05  | Powershell |  |
-| 06  | SQLlite |  |
+| 06  | SQLlite/CSS | [CSS part one](https://quarknerd.github.io/noJS/AOC-2023-Day6.html/) [CSS code](https://github.com/QuarkNerd/noJS/blob/main/AOC-2023-Day6.html)|
 | 07  | Haskell |  |
 | 08  | php |  |
 | 09  | C++ |  |
@@ -23,3 +23,4 @@ For Advent of Code 2023 (Aoc 2023) I'm going to try and solve each day with a di
 | 19  | D |  |
 | 20  | Typescript |  |
 | 21  | Rust |  |
+| 22  | Javascript |  |
