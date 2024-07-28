@@ -1,62 +1,97 @@
-use std::collections::HashSet;
+use std::{io::Read, collections::{HashMap, hash_map::Entry::{Occupied, Vacant}}, cmp::{min, max}};
+
+use rand::Rng;
+
+#[derive(Debug, Clone)]
+struct Node {
+    count: u16,
+}
+
+impl Node {
+    fn new() -> Self {
+        Node {
+            count: 1,
+        }
+    }
+}
+
+fn part_1<'a>(input: &'a str) -> u32 {
+    let mut indexes_by_name = HashMap::<&'a _, _>::new();
+    let mut next_index = 0;
+
+    // Helper for translating names into contiguous integers, so we can use a vec instead of HashMap
+    let mut get_index = |name: &'a _| {
+        match indexes_by_name.entry(name) {
+            Occupied(entry) => (false, *entry.get()),
+            Vacant(entry) => {
+                let index = next_index;
+                next_index += 1;
+                entry.insert(index);
+                (true, index)
+            }
+        }
+    };
+
+    let mut nodes = Vec::new();
+    let mut src_edges = Vec::new();
+    for line in input.lines() {
+        let (left, right) = line.split_once(": ").unwrap();
+        let (new, left) = get_index(left);
+        if new {
+            nodes.push(Node::new());
+        }
+        for right in right.split_ascii_whitespace() {
+            let (new, right) = get_index(right);
+            if new {
+                nodes.push(Node::new());
+            }
+            src_edges.push((min(left, right), max(left, right)));
+        }
+    }
+
+    let mut rng = rand::thread_rng();
+    let mut edges = Vec::new();
+    loop {
+        for node in &mut nodes {
+            node.count = 1;
+        }
+        edges.extend(src_edges.iter().copied());
+        let mut node_count = nodes.len();
+        while node_count > 2 {
+            let index = rng.gen_range(0..edges.len());
+            let (a, b) = edges.swap_remove(index);
+            nodes[a].count += nodes[b].count;
+            let mut i = 0;
+            while i < edges.len() {
+                let (c, d) = edges[i];
+                if (c, d) == (a, b) {
+                    edges.swap_remove(i);
+                } else if c == b {
+                    edges[i] = (min(a, d), max(a, d));
+                    i += 1;
+                } else if d == b {
+                    edges[i] = (min(a, c), max(a, c));
+                    i += 1;
+                } else {
+                    i += 1;
+                }
+            }
+            node_count -= 1;
+        }
+        if edges.len() == 3 {
+            let (a, b) = edges[0];
+            break nodes[a].count as u32 * nodes[b].count as u32;
+        }
+        edges.clear();
+    }
+}
 
 fn main() {
-    use std::time::Instant;
-    let now = Instant::now();
+    let mut input = String::new();
+    std::io::stdin().read_to_string(&mut input).unwrap();
 
-    let input = include_str!("input").lines();
-    let rocks: HashSet<(i64, i64)> = input.clone().enumerate().flat_map(|(i, row)| 
-        row.chars()
-            .enumerate()
-            .filter(|(_, loc)| loc == &'#')
-            .map(|(j, _)| (j as i64, i as i64))
-            .collect::<Vec<_>>()
-    ).collect();
-
-    println!("Part one: {}", countPlots(&rocks, (65, 65), 64));
-
-    // Part two can be sped up with alternative methods, counting diamonds
-    let yOfX0 = countPlots(&rocks, (65, 65), 65) as i64;
-    let yOfX1 = countPlots(&rocks, (65, 65), 65 + 131) as i64;
-    let yOfX2 = countPlots(&rocks, (65, 65), 65 + 131*2) as i64;
-
-    let x = 202300;
-    let c = yOfX0;
-    let a = (yOfX2 - 2*yOfX1 + c)/2;
-    let b = yOfX1 - a - c;
-
-    println!("Part two: {}", a*x*x + b*x + c);
-}
-
-fn modu(dividend: i64, divisor: i64) -> i64 {
-    if dividend < 0 {divisor + dividend%divisor} else {dividend%divisor}
-}
-
-fn countPlots(rocks: &HashSet<(i64, i64)>, initial: (i64, i64), steps: i64) -> usize {
-    let mut visited: HashSet<(i64, i64)> = HashSet::new();
-    let mut current: HashSet<(i64, i64)> = vec![initial].into_iter().collect();
-
-    if steps%2 == 1 {
-        current = current.into_iter().flat_map(|(j, i)| 
-            [(j + 1, i), (j - 1, i), (j, i + 1), (j, i - 1)]
-        )
-        .filter(|(j, i)| !rocks.contains(&(modu(*j, 131),modu(*i, 131))))
-        .collect()
-    }
-
-    for n in 0..steps/2 {
-        visited.extend(&current);
-        current = current.into_iter().flat_map(|(j, i)| 
-            [(j + 1, i), (j - 1, i), (j, i + 1), (j, i - 1)]
-        )
-        .filter(|(j, i)| !rocks.contains(&(modu(*j, 131),modu(*i, 131))))
-        .flat_map(|(j, i)| 
-            [(j + 1, i), (j - 1, i), (j, i + 1), (j, i - 1)]
-        )
-        .filter(|(j, i)| !rocks.contains(&(modu(*j, 131),modu(*i, 131))))
-        .filter(|coor| !visited.contains(coor))
-        .collect();
-    }
-    visited.extend(&current);
-    visited.len()
+    let start_time = std::time::Instant::now();
+    let result = part_1(&input);
+    println!("Part 1 time: {:?}", std::time::Instant::now() - start_time);
+    println!("Part 1 result: {}", result);
 }
