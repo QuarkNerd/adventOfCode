@@ -1,12 +1,17 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using Microsoft.VisualBasic;
-// using MathNet.Numerics.LinearAlgebra.Double;
+
+// x_n + t * dx_n = x + t * dx. Where x_n /dx_n are the x position and the x velocity of the nth hailstone. d/dx same for throwing stone
+// Mix with same for y, eliminate t
+// Use another stone to elimnate terms with multiple variable (sdt, ydx)
+// Use more stones to create set of 4 equations with 4 unknowns, solve with matricies
+// repeat with x and z
 
 double min = 200000000000000;
 double max = 400000000000000;
 
 string readText = File.ReadAllText("./input");
+
 Hailstone[] stones = readText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(Hailstone.fromString).ToArray();
 
 int g = 0;
@@ -29,93 +34,48 @@ for (int i = 0; i < stones.Length; i++)
 
 Console.WriteLine("Part one: " + g);
 
-Vector<Double> result = resultt(stones, Axis.X, Axis.Y);
-Vector<Double> result2 = resultt(stones, Axis.Y, Axis.Z);
+Vector<Double> result = resultt(stones, Axis.X, Axis.Y, 0);
+Vector<Double> result2 = resultt(stones, Axis.Y, Axis.Z, 0);
 
 var dx = (long)result[0];
 var dy = (long)result[2];
 var dz = (long)result2[2];
 
 // These are initial guesses due to double precison and MathNet not being compatible with long or decimal
-var x = (decimal)result[1];
-var y = (decimal)result[3];
-var z = (decimal)result2[3];
+var x = (long)result[1];
+var y = (long)result[3];
+var z = (long)result2[3];
 
-
-
-for (long testX = (long)x - 1000; testX < (long)x + 1000; testX++) 
+for (long testX = x - 1000; testX < x + 1000; testX++) 
 {
-    decimal time = (decimal)((stones[0].postion[Axis.X] - testX)/(dx - stones[0].velocity[Axis.X]));
+    long time = (((long)stones[0].postion[Axis.X] - testX)/(dx - (long)stones[0].velocity[Axis.X]));
 
-    decimal newY = (decimal)stones[0].postion[Axis.Y] + (decimal)(stones[0].velocity[Axis.Y] - dy)*time;
-    decimal newZ =  (decimal)stones[0].postion[Axis.Z] + (decimal)(stones[0].velocity[Axis.Z] - dz)*time;
-
+    long potentialY = (long)stones[0].postion[Axis.Y] + ((long)stones[0].velocity[Axis.Y] - dy)*time;
+    long potentialZ =  (long)stones[0].postion[Axis.Z] + ((long)stones[0].velocity[Axis.Z] - dz)*time;
 
     var found = true;
     foreach(Hailstone stone in stones) {
-        decimal tim = (decimal)((stone.postion[Axis.X] - testX)/(dx - stone.velocity[Axis.X]));
-        decimal ewY = (decimal)stone.postion[Axis.Y] + (decimal)(stone.velocity[Axis.Y] - dy)*tim;
-        decimal ewZ =  (decimal)stone.postion[Axis.Z] + (decimal)(stone.velocity[Axis.Z] - dz)*tim;
+        long tim = (((long)stone.postion[Axis.X] - testX)/(dx - (long)stone.velocity[Axis.X]));
+        long alternateY = (long)stone.postion[Axis.Y] + ((long)stone.velocity[Axis.Y] - dy)*tim;
+        long alternateZ =  (long)stone.postion[Axis.Z] + ((long)stone.velocity[Axis.Z] - dz)*tim;
 
-        if ((long)newY != (long)ewY || (long)newZ != (long)ewZ ) {
+        if (Math.Abs(potentialY - alternateY) > 10 || Math.Abs(potentialZ - ewZ) > 10 ) {
             found = false;
-
-            if (testX == 180391926345104) {
-                // Console.WriteLine("Part two Z: " + (testX + newY + newZ).ToString("N8"));
-                Console.WriteLine(newY);
-                Console.WriteLine(ewY);
-                Console.WriteLine(newZ);
-                Console.WriteLine(ewZ);
-            }
-            break;
         }
     }
 
     if (found) {
-        Console.WriteLine("Part two Z: " + (testX + newY + newZ).ToString("N8"));
+        Console.WriteLine("Part two: " + (testX + newY + newZ));
+        break;
     }
-
-
-    // if (testX == 180391926345104) {
-    //     Console.WriteLine(time);
-    //     Console.WriteLine(newY);
-    //     Console.WriteLine(newZ);
-    // }
-
-    // if ( Math.Abs(newY - y) <  500 &&  Math.Abs(newZ - z) <  500) {
-    //     // Console.WriteLine("Part two Z: " + (testX + newY + newZ).ToString("N8"));
-    // } else {
-    //     Console.WriteLine("Part two Z: " + (testX + newY + newZ).ToString("N8"));
-
-    // }
-
-    // for (long testY = x - 500; testY < x + 500; testY++) 
-    // {
-    //     for (long testZ = x - 500; testZ < x + 500; testZ++) 
-    //     {
-    //         // Console.WriteLine(i);
-    //     }       
-    // }
 }
 
-Console.WriteLine(dx);
-Console.WriteLine(x);
-Console.WriteLine(dy);
-Console.WriteLine(y);
-Console.WriteLine(dz);
-Console.WriteLine(z);
-Console.WriteLine("Part two Z: " + (x + y + z).ToString("N8"));
+static Vector<Double> resultt(Hailstone[] stones, Axis axis1, Axis axis2, int baseStone) {
 
-
-
-
-static Vector<Double> resultt(Hailstone[] stones, Axis axis1, Axis axis2) {
-    var BASE = 20;
-
-    double[] first = matrixRow(stones[BASE], stones[1], axis1, axis2);
-    double[] second = matrixRow(stones[BASE], stones[2], axis1, axis2);
-    double[] third = matrixRow(stones[BASE], stones[3], axis1, axis2);
-    double[] fourth = matrixRow(stones[BASE], stones[4], axis1, axis2);
+    double[] first = matrixRow(stones[baseStone], stones[1], axis1, axis2);
+    double[] second = matrixRow(stones[baseStone], stones[2], axis1, axis2);
+    double[] third = matrixRow(stones[baseStone], stones[3], axis1, axis2);
+    double[] fourth = matrixRow(stones[baseStone], stones[4], axis1, axis2);
 
     Matrix<double> M = DenseMatrix.OfArray(new double[,] {
         {first[0], first[1], first[2], first[3]},
@@ -125,10 +85,10 @@ static Vector<Double> resultt(Hailstone[] stones, Axis axis1, Axis axis2) {
     });
 
     Vector<Double> V = DenseVector.OfArray([
-        vElement(stones[BASE], stones[1], axis1, axis2),
-        vElement(stones[BASE], stones[2], axis1, axis2),
-        vElement(stones[BASE], stones[3], axis1, axis2),
-        vElement(stones[BASE], stones[4], axis1, axis2),
+        vElement(stones[baseStone], stones[1], axis1, axis2),
+        vElement(stones[baseStone], stones[2], axis1, axis2),
+        vElement(stones[baseStone], stones[3], axis1, axis2),
+        vElement(stones[baseStone], stones[4], axis1, axis2),
     ]);
 
     return M.Inverse() * V;
