@@ -18,7 +18,7 @@ For Advent of Code 2023 (Aoc 2023) I'm going to try and solve each day with a di
 | 14  | VBScrpt |  |
 | 15  | F# |  |
 | 16  | Julia |  |
-| 17  | Scala | incomplete |
+| 17  | Scala |  |
 | 18  | Python |  |
 | 19  | D |  |
 | 20  | Typescript |  |

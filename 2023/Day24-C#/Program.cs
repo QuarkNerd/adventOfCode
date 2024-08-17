@@ -1,13 +1,17 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.IO;
+﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
-//Console.WriteLine("Hello, World!");
+// x_n + t * dx_n = x + t * dx. Where x_n /dx_n are the x position and the x velocity of the nth hailstone. d/dx same for throwing stone
+// Mix with same for y, eliminate t
+// Use another stone to elimnate terms with multiple variable (sdt, ydx)
+// Use more stones to create set of 4 equations with 4 unknowns, solve with matricies
+// repeat with x and z
+
 double min = 200000000000000;
 double max = 400000000000000;
-//double min = 7;
-//double max = 27;
 
-string readText = File.ReadAllText("../../../input");
+string readText = File.ReadAllText("./input");
+
 Hailstone[] stones = readText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(Hailstone.fromString).ToArray();
 
 int g = 0;
@@ -16,7 +20,6 @@ for (int i = 0; i < stones.Length; i++)
     Hailstone one = stones[i];
     for (int j = i + 1; j < stones.Length; j++)
     {
-        //Console.WriteLine(i + " - " + j);
         Hailstone two = stones[j];
         Coor? inter = one.getXYintersection(two);
         if (inter == null) continue;
@@ -24,84 +27,89 @@ for (int i = 0; i < stones.Length; i++)
         double ttwo = two.getTAtx(inter.val[Axis.X]);
         if (min < inter.val[Axis.X] && min < inter.val[Axis.Y] && inter.val[Axis.X] < max && inter.val[Axis.Y] < max && tone > 0 && ttwo > 0)
         {
-            //Console.WriteLine(i + " - " + j);
             g++;
         }
     }
 }
-Console.WriteLine(g);
-Console.WriteLine(calculateInitialPosition(stones, Axis.X) + calculateInitialPosition(stones, Axis.Y) + calculateInitialPosition(stones, Axis.Z));
-Console.WriteLine(calculateInitialPosition(stones, Axis.Y));
-Console.WriteLine(calculateInitialPosition(stones, Axis.Z));
 
-//Part two equations were solved by hand
+Console.WriteLine("Part one: " + g);
 
-static double calculateInitialPosition(Hailstone[] hailStones, Axis primaryAxis)
+Vector<Double> result = resultt(stones, Axis.X, Axis.Y, 0);
+Vector<Double> result2 = resultt(stones, Axis.Y, Axis.Z, 0);
+
+var dx = (long)result[0];
+var dy = (long)result[2];
+var dz = (long)result2[2];
+
+// These are initial guesses due to double precison and MathNet not being compatible with long or decimal
+var x = (long)result[1];
+var y = (long)result[3];
+var z = (long)result2[3];
+
+for (long testX = x - 1000; testX < x + 1000; testX++) 
 {
-    Hailstone[] secondEight = new Hailstone[8];
-    Array.Copy(hailStones, 8, secondEight, 0, 8);
+    long time = (((long)stones[0].postion[Axis.X] - testX)/(dx - (long)stones[0].velocity[Axis.X]));
 
-    return (calculateF(hailStones, primaryAxis) * calculateJ(secondEight, primaryAxis) - calculateF(secondEight, primaryAxis) * calculateJ(hailStones, primaryAxis)) / 
-        (calculateF(secondEight, primaryAxis) * calculateI(hailStones, primaryAxis) - calculateF(hailStones, primaryAxis) * calculateI(secondEight, primaryAxis));
+    long potentialY = (long)stones[0].postion[Axis.Y] + ((long)stones[0].velocity[Axis.Y] - dy)*time;
+    long potentialZ =  (long)stones[0].postion[Axis.Z] + ((long)stones[0].velocity[Axis.Z] - dz)*time;
+
+    var found = true;
+    foreach(Hailstone stone in stones) {
+        long tim = (((long)stone.postion[Axis.X] - testX)/(dx - (long)stone.velocity[Axis.X]));
+        long alternateY = (long)stone.postion[Axis.Y] + ((long)stone.velocity[Axis.Y] - dy)*tim;
+        long alternateZ =  (long)stone.postion[Axis.Z] + ((long)stone.velocity[Axis.Z] - dz)*tim;
+
+        if (Math.Abs(potentialY - alternateY) > 10 || Math.Abs(potentialZ - ewZ) > 10 ) {
+            found = false;
+        }
+    }
+
+    if (found) {
+        Console.WriteLine("Part two: " + (testX + newY + newZ));
+        break;
+    }
 }
 
-static double calculateJ(Hailstone[] hailStones, Axis primaryAxis)
-{
-    Hailstone[] secondFour = new Hailstone[4];
-    Array.Copy(hailStones, 4, secondFour, 0, 4);
-    Hailstone[] firstTwo = [hailStones[0], hailStones[1]];
-    Hailstone[] secondTwo = [hailStones[2], hailStones[3]];
-    Hailstone[] thirdTwo = [hailStones[4], hailStones[5]];
-    Hailstone[] fourthTwo = [hailStones[6], hailStones[7]];
+static Vector<Double> resultt(Hailstone[] stones, Axis axis1, Axis axis2, int baseStone) {
 
-    return calculateE(hailStones, primaryAxis) * (calculateG(thirdTwo, primaryAxis) - calculateG(fourthTwo, primaryAxis))
-        + calculateE(secondFour, primaryAxis) * (calculateG(secondTwo, primaryAxis) - calculateG(firstTwo, primaryAxis));
+    double[] first = matrixRow(stones[baseStone], stones[1], axis1, axis2);
+    double[] second = matrixRow(stones[baseStone], stones[2], axis1, axis2);
+    double[] third = matrixRow(stones[baseStone], stones[3], axis1, axis2);
+    double[] fourth = matrixRow(stones[baseStone], stones[4], axis1, axis2);
+
+    Matrix<double> M = DenseMatrix.OfArray(new double[,] {
+        {first[0], first[1], first[2], first[3]},
+        {second[0], second[1], second[2], second[3]},
+        {third[0], third[1], third[2], third[3]},
+        {fourth[0], fourth[1], fourth[2], fourth[3]},
+    });
+
+    Vector<Double> V = DenseVector.OfArray([
+        vElement(stones[baseStone], stones[1], axis1, axis2),
+        vElement(stones[baseStone], stones[2], axis1, axis2),
+        vElement(stones[baseStone], stones[3], axis1, axis2),
+        vElement(stones[baseStone], stones[4], axis1, axis2),
+    ]);
+
+    return M.Inverse() * V;
 }
 
-
-static double calculateI(Hailstone[] hailStones, Axis primaryAxis)
+static double[] matrixRow(Hailstone stone1, Hailstone stone2, Axis axis1, Axis axis2)
 {
-    Hailstone[] secondFour = new Hailstone[4];
-    Array.Copy(hailStones, 4, secondFour, 0, 4);
-    Hailstone[] firstTwo = [hailStones[0], hailStones[1]];
-    Hailstone[] secondTwo = [hailStones[2], hailStones[3]];
-    Hailstone[] thirdTwo = [hailStones[4], hailStones[5]];
-    Hailstone[] fourthTwo = [hailStones[6], hailStones[7]];
-
-    return calculateE(hailStones, primaryAxis) * (calculateH(thirdTwo, primaryAxis) - calculateH(fourthTwo, primaryAxis))
-        + calculateE(secondFour, primaryAxis) * (calculateH(secondTwo, primaryAxis) - calculateH(firstTwo, primaryAxis));
+    return [
+        stone1.postion[axis2] - stone2.postion[axis2],
+      - stone1.velocity[axis2] + stone2.velocity[axis2],
+      - stone1.postion[axis1] + stone2.postion[axis1],
+        stone1.velocity[axis1] - stone2.velocity[axis1],
+    ];
 }
 
-static double calculateH(Hailstone[] hailStones, Axis primaryAxis)
-{
-    Axis secondry = primaryAxis == Axis.Y ? Axis.X : Axis.Y;
-    return hailStones[1].velocity[secondry] - hailStones[0].velocity[secondry];
+static double vElement(Hailstone stone1, Hailstone stone2, Axis axis1, Axis axis2) {
+    return vElementPart(stone2, axis1, axis2) - vElementPart(stone1, axis1, axis2);
 }
 
-static double calculateG(Hailstone[] hailStones, Axis primaryAxis)
-{
-    Axis secondry = primaryAxis == Axis.Y ? Axis.X : Axis.Y;
-    Hailstone first = hailStones[0];
-    Hailstone second = hailStones[1];
-    return first.postion[primaryAxis] * first.velocity[secondry] - second.postion[primaryAxis] * second.velocity[secondry]
-        - first.postion[secondry] * first.velocity[primaryAxis] + second.postion[secondry] * second.velocity[primaryAxis];
-}
-
-static double calculateF(Hailstone[] hailStones, Axis primaryAxis)
-{
-    Axis secondry = primaryAxis == Axis.Y ? Axis.X : Axis.Y;
-    Hailstone[] secondFour = new Hailstone[4];
-    Array.Copy(hailStones, 4, secondFour, 0, 4);
-    double E_4 = calculateE(secondFour, primaryAxis);
-    double E_0 = calculateE(hailStones, primaryAxis);
-    return E_4 * (hailStones[3].postion[secondry] - hailStones[2].postion[secondry] - hailStones[1].postion[secondry] + hailStones[0].postion[secondry]) +
-        E_0 * (hailStones[5].postion[secondry] - hailStones[4].postion[secondry] - hailStones[6].postion[secondry] + hailStones[7].postion[secondry]);
-}
-
-static double calculateE(Hailstone[] hailStones, Axis axis)
-{
-    return (hailStones[2].velocity.val[axis] - hailStones[3].velocity.val[axis]) * (hailStones[0].postion.val[axis] - hailStones[1].postion.val[axis]) - 
-        (hailStones[0].velocity.val[axis] - hailStones[1].velocity.val[axis]) * (hailStones[2].postion.val[axis] - hailStones[3].postion.val[axis]);
+static double vElementPart(Hailstone stone, Axis axis1, Axis axis2) {
+    return stone.postion[axis1]*stone.velocity[axis2] - stone.postion[axis2]*stone.velocity[axis1];
 }
 
 class Coor
@@ -164,12 +172,6 @@ class Hailstone
         return new Hailstone(values[0], values[1]);
     }
 
-    //public Coor getCoorAtX(double x)
-    //{
-    //    double t = getTAtx(x);
-    //    return new Coor(x, postion.val[Axis.Y] + t*velocity.val[Axis.Y], postion.z + t*velocity.z);
-    //}
-
     public double getTAtx(double x)
     {
         return (x - postion.val[Axis.X]) / velocity.val[Axis.X];
@@ -181,16 +183,12 @@ class Hailstone
         double yratio = velocity.val[Axis.Y] / other.velocity.val[Axis.Y];
         if (xratio.Equals(yratio))
         {
-            //Console.WriteLine("wwww");
-
             return null;
         }
         double x = (cOfXy - other.cOfXy) / (other.mOfXy - mOfXy);
         double y = mOfXy * x + cOfXy;
         return new Coor(x, y, 0);
     }
-
-    // same path check
 }
 
 enum Axis
