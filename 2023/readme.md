@@ -25,4 +25,5 @@ For Advent of Code 2023 (Aoc 2023) I'm going to try and solve each day with a di
 | 21  | Rust |  |
 | 22  | Javascript |  |
 | 23  | Java |  |
+| 24  | C# / By hand | Part Two Equations were by hand |
 | 25  | Kotlin |  |
