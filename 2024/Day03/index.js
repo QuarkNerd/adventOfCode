@@ -2,25 +2,23 @@ function solve(inputString) {
   const regex = /(\w+'?t?)\(((\d{1,3}),(\d{1,3}))?\)/g;
   const matches = inputString.matchAll(regex);
 
-  let g = true;
+  let shouldDo = true;
+  let valid = 0;
+  let invalid = 0;
 
-  const one = matches
-    .map((x) => {
-      console.log(x[0]);
-      if (x[0] === "do()") {
-        g = true;
+  [...matches].forEach((x) => {
+    shouldDo = x[0] === "do()" ? true : x[0] == "don't()" ? false : shouldDo;
+    if (x[1] == "mul") {
+      const product = parseInt(x[3]) * parseInt(x[4]);
+      if (shouldDo) {
+        valid += product;
+      } else {
+        invalid += product;
       }
-      if (x[0] == "don't()") {
-        g = false;
-      }
-      if (x[1] == "mul" && g) {
-        console.log(x[3], "www", x[4]);
-        return parseInt(x[3]) * parseInt(x[4]);
-      }
-      return 0;
-    })
-    .reduce((a, b) => a + b, 0);
-  return [one, 0];
+    }
+  })
+
+  return [valid + invalid, valid];
 }
 
 module.exports = solve;
