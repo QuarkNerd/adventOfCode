@@ -3,10 +3,12 @@
 // load
 const fs = require("fs");
 const day = process.argv[2];
+const useSample = !!process.argv[3];
 const dayString = day.length === 1 ? "0" + day : day;
 const folder = `./Day${dayString}`;
 const solve = require(`${folder}/index.js`);
-const input = fs.readFileSync(`${folder}/input`).toString("utf8");
+const inputFileName = useSample ? 'sample' : 'input';
+const input = fs.readFileSync(`${folder}/${inputFileName}`).toString("utf8");
 
 console.time();
 const solution = solve(input);
