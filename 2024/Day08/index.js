@@ -1,4 +1,8 @@
-const { landscapeToHashmap, forEveryPair, getHCF } = require("../utils");
+const {
+  landscapeToHashmap,
+  forEveryPair,
+  getHCF,
+} = require("../../shared/js/utils");
 
 function solve(inputString) {
   const { height, width, nodes } = landscapeToHashmap(

@@ -1,9 +1,8 @@
-const directions = [
-  { x: -1, y: 0 },
-  { x: 0, y: 1 },
-  { x: 1, y: 0 },
-  { x: 0, y: -1 },
-];
+const {
+  orthoDirectionsClockwise,
+  nodeToString,
+  getOrthNeighbours,
+} = require("../../shared/js/2dcoor");
 
 function solve(inputString) {
   const input = inputString.split(/\r?\n/).map((x) => x.split(""));
@@ -46,13 +45,10 @@ function findAndRemoveRegion(input) {
     current.forEach((n) => {
       if (!input[n.y][n.x]) return;
       input[n.y][n.x] = null;
-      visited.add(n.y + "," + n.x);
+      visited.add(nodeToString(n));
 
-      directions.forEach((dir, directionIndex) => {
-        const x = n.x + dir.x;
-        const y = n.y + dir.y;
-
-        if (visited.has(y + "," + x)) return;
+      getOrthNeighbours(n).forEach(({ x, y }, directionIndex) => {
+        if (visited.has(nodeToString({ x, y }))) return;
         if (input[y]?.[x] !== letter) {
           orthNeighbors[directionIndex].push({ x, y });
           return;
@@ -75,8 +71,10 @@ function findAndRemoveRegion(input) {
 
 function countSides(orthNeighbors, i) {
   const set = new Set(orthNeighbors.map(({ x, y }) => y + "," + x));
-  const dir = directions[(i + 1) % 4];
-  let sides = orthNeighbors.filter((n) => !set.has(n.y + dir.y + "," + (n.x + dir.x))).length;
+  const dir = orthoDirectionsClockwise[(i + 1) % 4];
+  let sides = orthNeighbors.filter(
+    (n) => !set.has(n.y + dir.y + "," + (n.x + dir.x))
+  ).length;
   return sides;
 }
 

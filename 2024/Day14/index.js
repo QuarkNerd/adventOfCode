@@ -1,4 +1,5 @@
-const { mod } = require("../utils");
+const { mod } = require("../../shared/js/utils");
+const { getAllNeighbours, nodeToString } = require("../../shared/js/2dcoor");
 const height = 103;
 const width = 101;
 const verticalyMiddle = (height - 1) / 2;
@@ -66,7 +67,7 @@ function drawNextWithBlockAndUpdate(bots, i) {
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const img = pos.has(x + "," + y) ? "#" : ".";
+      const img = pos.has(nodeToString({ x, y })) ? "#" : ".";
       process.stdout.write(img);
     }
     process.stdout.write("\n");
@@ -74,23 +75,8 @@ function drawNextWithBlockAndUpdate(bots, i) {
   return i;
 }
 
-const directions = [
-  { x: -1, y: -1 },
-  { x: -1, y: 0 },
-  { x: -1, y: 1 },
-  { x: 0, y: -1 },
-  { x: 0, y: 1 },
-  { x: 1, y: 1 },
-  { x: 1, y: 0 },
-  { x: 1, y: -1 },
-];
-
 function containsBlockAround(bots, bot) {
-  return directions.every((dir) => {
-    const x = bot.x + dir.x;
-    const y = bot.y + dir.y;
-    return bots.has(x + "," + y);
-  });
+  return getAllNeighbours(bot).every((n) => bots.has(nodeToString(n)));
 }
 
 module.exports = solve;
