@@ -1,9 +1,11 @@
-const { getOrthNeighbours, nodeToString } = require("../../shared/js/2dcoor");
+const {
+  getOrthNeighbours,
+  nodeToString,
+  to2dArray,
+} = require("../../shared/js/2dcoor");
 
 function solve(inputString) {
-  const map = inputString
-    .split(/\r?\n/)
-    .map((line) => line.split("").map((x) => parseInt(x)));
+  const map = to2dArray(inputString, (x) => parseInt(x));
 
   let nodes = [];
   for (let y = 0; y < map.length; y++) {
