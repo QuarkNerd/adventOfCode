@@ -7,7 +7,7 @@ const useSample = !!process.argv[3];
 const dayString = day.length === 1 ? "0" + day : day;
 const folder = `./Day${dayString}`;
 const solve = require(`${folder}/index.js`);
-const inputFileName = useSample ? 'sample' : 'input';
+const inputFileName = useSample ? "sample" : "input";
 const input = fs.readFileSync(`${folder}/${inputFileName}`).toString("utf8");
 
 console.time();

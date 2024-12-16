@@ -57,4 +57,8 @@ function getHCF(a, b) {
   return currentHighest;
 }
 
-module.exports = { forEveryPair, landscapeToHashmap, getHCF };
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+
+module.exports = { forEveryPair, landscapeToHashmap, getHCF, mod };
