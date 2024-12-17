@@ -44,4 +44,23 @@ function findShortestPathLength(startingState, getNeighbors, isFinalState) {
   }
 }
 
+function getIndexToInsertInSortedArray(
+  sortedArray,
+  valueToInsert,
+  itemToValueHash
+) {
+  let lowerBound = 0;
+  let upperBound = sortedArray.length - 1;
+  if (valueToInsert <= itemToValueHash[sortedArray[0]]) return 0;
+  if (valueToInsert >= itemToValueHash[sortedArray[upperBound]])
+    return upperBound + 1;
+  while (true) {
+    const index = parseInt((lowerBound + upperBound) / 2);
+    if (valueToInsert < itemToValueHash[sortedArray[index]]) upperBound = index;
+    else if (valueToInsert > itemToValueHash[sortedArray[index + 1]])
+      lowerBound = index;
+    else return index + 1;
+  }
+}
+
 module.exports = { findShortestPathLength };

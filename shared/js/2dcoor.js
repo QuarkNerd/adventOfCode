@@ -79,6 +79,20 @@ function parseDirection(str) {
   throw new Error("Invalid stirng: " + str);
 }
 
+function getOppositeDirectionString(str) {
+  switch (str) {
+    case directions.DOWN:
+      return directions.UP;
+    case directions.UP:
+      return directions.DOWN;
+    case directions.RIGHT:
+      return directions.LEFT;
+    case directions.LEFT:
+      return directions.RIGHT;
+  }
+  throw new Error("Invalid direction: " + str);
+}
+
 // map parsing
 function to2dArray(inp, parser = null) {
   return inp
@@ -114,4 +128,6 @@ module.exports = {
   parseDirection,
   applyDirection,
   directionCoors,
+  directions,
+  getOppositeDirectionString,
 };
