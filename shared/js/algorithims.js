@@ -8,7 +8,7 @@ function findShortestPathLength(startingState, getNeighbors, isFinalState) {
   const completedStatesDistance = {};
 
   while (true) {
-    if (!sortedStates.length) throw new Error("Failed to find path");
+    if (!sortedStates.length) return null;
     const stateValue = sortedStates.shift();
     const shortestDistance = shortestDistancesHash[stateValue];
 
@@ -63,4 +63,22 @@ function getIndexToInsertInSortedArray(
   }
 }
 
-module.exports = { findShortestPathLength };
+function binaryIntSearch(min, max, func) {
+  while (min !== max) {
+    let mid = Math.floor((min + max) / 2);
+    const result = func(mid);
+    switch (result) {
+      case "MATCH":
+        return mid;
+      case "TOO_HIGH":
+        max = mid;
+        break;
+      case "TOO_LOW":
+        min = mid;
+        break;
+    }
+  }
+  return func(min) === "MATCH" ? min : null;
+}
+
+module.exports = { findShortestPathLength, binaryIntSearch };

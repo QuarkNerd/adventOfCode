@@ -118,9 +118,15 @@ function nodeToString(coor) {
   return coor.x + "," + coor.y;
 }
 
+function stringToNode(str) {
+  const [x, y] = str.split(",").map((x) => parseInt(x));
+  return { x, y };
+}
+
 module.exports = {
   getOrthNeighbours,
   nodeToString,
+  stringToNode,
   orthoDirectionsClockwise,
   getAllNeighbours,
   to2dArray,
