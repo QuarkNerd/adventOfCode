@@ -6,10 +6,10 @@ function solve(inputString) {
   const stringDefs = inputString.split(/\r?\n\r?\n/);
   const coefficents = stringDefs.map(getCoefficents);
   const P1 = coefficents.map(calcTokens).reduce((a, b) => a + b, 0);
-  coefficents.forEach(coef => {
+  coefficents.forEach((coef) => {
     coef.Y_T += 10000000000000;
     coef.X_T += 10000000000000;
-  })
+  });
   const P2 = coefficents.map(calcTokens).reduce((a, b) => a + b, 0);
 
   return [P1, P2];
