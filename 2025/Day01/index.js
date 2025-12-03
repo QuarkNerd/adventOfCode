@@ -1,0 +1,2 @@
+// Run in console of input webpage
+eval("current=50;endCount=0;totalCount=0;next=50" + (document.getElementsByTagName("pre")[0].innerHTML + "\n").replaceAll("L", ";next-=").replaceAll("R", ";next+=").replaceAll("\n",";atZero = next%100 == 0;endCount+=atZero;totalCount+=Math.abs(Math.floor(current/100)-Math.floor(next/100));totalCount+= (next < current) && atZero;totalCount -= (next < current) && current%100 == 0;current=next;") +"console.log(endCount, totalCount)")
