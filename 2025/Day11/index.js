@@ -1,4 +1,5 @@
 const input = require(`fs`).readFileSync(`input`).toString`utf8`
+  .trim()
   .split(/\r?\n/)
   .map((line) => line.split(": "))
   .map(([ins, outs]) => [ins, outs.split(" ")]);
@@ -11,26 +12,26 @@ console.log(
 );
 
 function solve(start, end) {
-  const partOneNodes = new Set([start]);
+  const visitableNodes = new Set([start]);
   let size = 0;
-  while (partOneNodes.size > size) {
-    size = partOneNodes.size;
-    [...partOneNodes]
+  while (visitableNodes.size > size) {
+    size = visitableNodes.size;
+    [...visitableNodes]
       .flatMap((n) => inToOut[n])
       .filter((x) => x !== undefined)
-      .forEach(partOneNodes.add, partOneNodes);
+      .forEach(visitableNodes.add, visitableNodes);
   }
 
   const outToIn = {};
   for (const [inPath, outs] of input) {
-    if (!partOneNodes.has(inPath)) continue;
+    if (!visitableNodes.has(inPath)) continue;
     for (const out of outs) {
-      if (!partOneNodes.has(out)) continue;
+      if (!visitableNodes.has(out)) continue;
       if (!outToIn[out]) outToIn[out] = [];
       outToIn[out].push(inPath);
     }
   }
-  // need to ignore ones that arent reached
+
   const outToWays = { [start]: 1 };
   while (!outToWays[end]) {
     if (!Object.keys(outToIn).length) return 0;

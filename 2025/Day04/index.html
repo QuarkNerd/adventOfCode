@@ -1,0 +1,60 @@
+<!--Runnable in Netscape
+not consructing objects with {} or arrays, no map or push (sonot polyfill) in array
+Annomous functions
+tempalte literals
+input outside form, naming a button inside leeme
+long running cant hae multiline input -->
+<!DOCTYPE html>
+<html>
+  <body>
+      <FORM NAME="form1">
+     <input type="text" Name="total">
+     <input type=button value='press' onClick="calc()">
+     </FORM>
+  </body>
+<script>
+
+function calc() {
+  var i = to2dArray(document.form1.total.value);
+  partTwo = 0;
+  latestRemoved = 0;
+  l = i.length
+  while (true) {
+    for (var y = 0; y < l; y++) {
+      for (var x = 0; x < i[0].length; x++) {
+        if (i[y].charAt(x) != "@") continue;
+        if (
+          countNeighbors(x, y, i) < 4
+        ) {
+          latestRemoved += 1;
+          i[y] = i[y].substring(0, x) + "." + i[y].substring(x + 1, i[y].length);
+        }
+      }
+    }
+    partTwo += latestRemoved;
+    if (latestRemoved == 0) {
+      break;
+    }
+    latestRemoved = 0;
+  }
+  alert(partTwo);
+}
+
+function countNeighbors(x, y, i) {
+  var count = -1;
+  for (var dy = -1; dy < 2; dy++) {
+    for (var dx = -1; dx < 2; dx++) {
+        if (i[y + dy] && i[y + dy].charAt(x + dx) == "@") {
+          count++;
+        }
+    }
+  }
+  return count;
+}
+
+function to2dArray(inp) {
+  return inp.split("-");
+}
+
+</script>
+</html>
